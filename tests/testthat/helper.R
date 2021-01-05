@@ -118,3 +118,8 @@ test_graph_learner = function(task, resampling, learner = "classif.featureless",
 
   return(TRUE)
 }
+
+# vdiffr::expect_doppelganger = function(title, fig, path = NULL, ...) {
+#   testthat::skip_if_not_installed("vdiffr")
+#   vdiffr::expect_doppelganger(title = title, fig = fig, path = path, ...)
+# }

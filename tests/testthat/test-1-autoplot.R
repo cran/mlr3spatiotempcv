@@ -16,6 +16,7 @@ test_that("errors are thrown for non-valid argument settings", {
 # cv ---------------------------------------------------------------------------
 
 test_that("plot() works for 'cv'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("cv", folds = 4)
@@ -35,6 +36,7 @@ test_that("plot() works for 'cv'", {
 })
 
 test_that("plot() works for 'repeated-cv'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("repeated_cv",
@@ -65,6 +67,7 @@ test_that("plot() works for 'repeated-cv'", {
 # spcv_coords ------------------------------------------------------------------
 
 test_that("plot() works for 'spcv_coords'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("spcv_coords", folds = 4)
@@ -84,6 +87,7 @@ test_that("plot() works for 'spcv_coords'", {
 })
 
 test_that("plot() works for 'repeated_spcv_coords'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("repeated_spcv_coords",
@@ -114,6 +118,7 @@ test_that("plot() works for 'repeated_spcv_coords'", {
 # spcv_block -------------------------------------------------------------------
 
 test_that("plot() works for 'spcv_block'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("spcv_block", cols = 2, rows = 2, folds = 4)
@@ -133,6 +138,7 @@ test_that("plot() works for 'spcv_block'", {
 })
 
 test_that("plot() works for 'repeated_spcv_block'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("repeated_spcv_block",
@@ -163,6 +169,7 @@ test_that("plot() works for 'repeated_spcv_block'", {
 # spcv_env ---------------------------------------------------------------------
 
 test_that("plot() works for 'spcv_env'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("spcv_env", folds = 4)
@@ -182,6 +189,7 @@ test_that("plot() works for 'spcv_env'", {
 })
 
 test_that("plot() works for 'repeated_spcv_env'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   plots = prepare_autoplot("repeated_spcv_env",
@@ -212,6 +220,7 @@ test_that("plot() works for 'repeated_spcv_env'", {
 # sptcv_cstf -------------------------------------------------------------------
 
 test_that("plot() works for 'sptcv_cstf'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   task = tsk("cookfarm")
@@ -232,9 +241,8 @@ test_that("plot() works for 'sptcv_cstf'", {
   vdiffr::expect_doppelganger("SptCVCstf - Fold 1-2", p3)
 })
 
-
-
 test_that("plot() works for 'repeated_spcv_cstf'", {
+  skip_if_not_installed("vdiffr")
   set.seed(42)
 
   task = tsk("cookfarm")

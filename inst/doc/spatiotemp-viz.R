@@ -8,12 +8,9 @@ knitr::opts_chunk$set(
 os = ifelse(!Sys.info()[["sysname"]] == "Darwin", TRUE, FALSE)
 
 # - don't run on CRAN
-is_cran = ifelse(Sys.getenv("NOT_CRAN") != "false", FALSE, TRUE)
+is_cran = ifelse(Sys.getenv("NOT_CRAN") != "", FALSE, TRUE)
 
-# run on ci
-pkgdown = Sys.getenv("IN_PKGDOWN") != ""
-
-## ---- fig.align='center', eval=os&&!is_cran&&pkgdown, fig.width=8, fig.height=9----
+## ---- fig.align='center', eval=os&&!is_cran, fig.width=8, fig.height=9--------
 #  library(mlr3)
 #  library(mlr3spatiotempcv)
 #  task_st = tsk("cookfarm")
@@ -50,8 +47,8 @@ pkgdown = Sys.getenv("IN_PKGDOWN") != ""
 #    )
 #  )
 
-## ---- eval=os&&!is_cran&&!pkgdown, echo=FALSE, results='asis'-----------------
-#  cat("(The actual graphic here only rendered on the pkgdown site: please visit https://mlr3spatiotempcv.mlr-org.com.)")
+## ---- eval=os&&!is_cran, echo=FALSE, results='asis'---------------------------
+#  cat("(The actual graphic here is only rendered on the pkgdown site: please visit https://mlr3spatiotempcv.mlr-org.com.)")
 
 ## ---- eval=!os, results='asis', echo=FALSE------------------------------------
 cat("(The Cluto method does not work on macOS: please visit https://mlr3spatiotempcv.mlr-org.com to see the rendered plot.)")
