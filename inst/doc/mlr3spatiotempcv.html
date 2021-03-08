@@ -166,8 +166,34 @@ div.csl-indent {
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>This package adds resampling methods for the {mlr3} package framework suited for spatial, temporal and spatiotemporal data. These methods can help to reduce the influence of <a href="https://mlr3book.mlr-org.com/spatiotemporal.html#spatiotemporal-intro">autocorrelation</a> on performance estimates when performing cross-validation. While this article gives a rather technical introduction to the package, a more applied approach can be found in the <a href="https://mlr3book.mlr-org.com/spatiotemporal.html#spatiotemporal">mlr3book section on “Spatiotemporal Analysis”</a>.</p>
-<p>After loading the package via <code>library(&quot;mlr3spatiotempcv&quot;)</code>, the spatiotemporal resampling methods and example tasks provided by {mlr3spatiotempcv} are available to the user.</p>
-<p>In mlr3, dictionaries are used for overview purposes of available methods. The following shows which dictionaries get appended with new entries.</p>
+<p>After loading the package via <code>library(&quot;mlr3spatiotempcv&quot;)</code>, the spatiotemporal resampling methods and example tasks provided by {mlr3spatiotempcv} are available to the user <strong>alongside the default {mlr3} resampling methods and tasks</strong>.</p>
+<div id="creating-a-spatial-task" class="section level2">
+<h2>Creating a spatial Task</h2>
+<p>To make use of spatial resampling methods, a {mlr3} task that is aware of its spatial characteristic needs to be created. Two child classes exist in {mlr3spatiotempcv} for this purpose:</p>
+<ul>
+<li><code>TaskClassifST</code></li>
+<li><code>TaskRegrST</code></li>
+</ul>
+<p>To create one of these, one can either pass a <code>sf</code> object as the “backend” directly:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create &#39;sf&#39; object</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data_sf <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(ecuador, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create mlr3 task</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> TaskClassifST<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;ecuador_sf&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">backend =</span> data_sf, <span class="at">target =</span> <span class="st">&quot;slides&quot;</span>, <span class="at">positive =</span> <span class="st">&quot;TRUE&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>or use a plain <code>data.frame</code>. In this case, the constructor of <code>TaskClassifST</code> needs a few more arguments:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> mlr3<span class="sc">::</span><span class="fu">as_data_backend</span>(ecuador)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> TaskClassifST<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;ecuador&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">backend =</span> data, <span class="at">target =</span> <span class="st">&quot;slides&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">positive =</span> <span class="st">&quot;TRUE&quot;</span>, <span class="at">extra_args =</span> <span class="fu">list</span>(<span class="at">coordinate_names =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Now this Task can be used as a normal {mlr3} task in any kind of modeling scenario. Have a look at the <a href="https://mlr3book.mlr-org.com/spatiotemporal.html#spatiotemporal">mlr3book section on “Spatiotemporal Analysis”</a> on how to apply a spatiotemporal resampling method to such a task.</p>
+</div>
+</div>
+<div id="contributed-assets-by-mlr3spatiotempcv" class="section level1">
+<h1>Contributed assets by {mlr3spatiotempcv}</h1>
+<p>In {mlr3}, dictionaries are used for overview purposes of available methods. The following sections show which dictionaries get appended with new entries when loading {mlr3spatiotempcv}.</p>
 </div>
 <div id="task-type" class="section level1">
 <h1>Task Type</h1>
@@ -176,17 +202,17 @@ div.csl-indent {
 <li><p><code>TaskClassifST</code></p></li>
 <li><p><code>TaskRegrST</code></p></li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mlr_reflections<span class="sc">$</span>task_types</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       type          package          task        learner        prediction</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: classif             mlr3   TaskClassif LearnerClassif PredictionClassif</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: classif mlr3spatiotempcv TaskClassifST LearnerClassif PredictionClassif</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3:    regr             mlr3      TaskRegr    LearnerRegr    PredictionRegr</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4:    regr mlr3spatiotempcv    TaskRegrST    LearnerRegr    PredictionRegr</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           measure</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: MeasureClassif</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: MeasureClassif</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3:    MeasureRegr</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4:    MeasureRegr</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mlr_reflections<span class="sc">$</span>task_types</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       type          package          task        learner        prediction</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: classif             mlr3   TaskClassif LearnerClassif PredictionClassif</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: classif mlr3spatiotempcv TaskClassifST LearnerClassif PredictionClassif</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3:    regr             mlr3      TaskRegr    LearnerRegr    PredictionRegr</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4:    regr mlr3spatiotempcv    TaskRegrST    LearnerRegr    PredictionRegr</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           measure</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: MeasureClassif</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: MeasureClassif</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3:    MeasureRegr</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4:    MeasureRegr</span></span></code></pre></div>
 </div>
 <div id="task-column-roles" class="section level1">
 <h1>Task Column Roles</h1>
@@ -194,20 +220,22 @@ div.csl-indent {
 <ul>
 <li><code>coordinates</code></li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mlr_reflections<span class="sc">$</span>task_col_roles</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $regr</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot; &quot;target&quot;  &quot;name&quot;    &quot;order&quot;   &quot;stratum&quot; &quot;group&quot;   &quot;weight&quot; </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $classif</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot; &quot;target&quot;  &quot;name&quot;    &quot;order&quot;   &quot;stratum&quot; &quot;group&quot;   &quot;weight&quot; </span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $classif_st</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot;     &quot;target&quot;      &quot;name&quot;        &quot;order&quot;       &quot;stratum&quot;    </span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;group&quot;       &quot;weight&quot;      &quot;coordinates&quot;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $regr_st</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot;     &quot;target&quot;      &quot;name&quot;        &quot;order&quot;       &quot;stratum&quot;    </span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;group&quot;       &quot;weight&quot;      &quot;coordinates&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mlr_reflections<span class="sc">$</span>task_col_roles</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $regr</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot; &quot;target&quot;  &quot;name&quot;    &quot;order&quot;   &quot;stratum&quot; &quot;group&quot;   &quot;weight&quot; </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [8] &quot;uri&quot;    </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $classif</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot; &quot;target&quot;  &quot;name&quot;    &quot;order&quot;   &quot;stratum&quot; &quot;group&quot;   &quot;weight&quot; </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [8] &quot;uri&quot;    </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $classif_st</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot;     &quot;target&quot;      &quot;name&quot;        &quot;order&quot;       &quot;stratum&quot;    </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;group&quot;       &quot;weight&quot;      &quot;uri&quot;         &quot;coordinates&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $regr_st</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;feature&quot;     &quot;target&quot;      &quot;name&quot;        &quot;order&quot;       &quot;stratum&quot;    </span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6] &quot;group&quot;       &quot;weight&quot;      &quot;uri&quot;         &quot;coordinates&quot;</span></span></code></pre></div>
 </div>
 <div id="resampling-methods" class="section level1">
 <h1>Resampling Methods</h1>
@@ -221,27 +249,27 @@ div.csl-indent {
 <li><p><code>sptcv_cstf</code></p></li>
 </ul>
 <p>and their respective repeated versions.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(mlr_resamplings)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                      key                                  params iters</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1:            bootstrap                           repeats,ratio    30</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2:               custom                                             0</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3:                   cv                                   folds    10</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4:              holdout                                   ratio     1</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5:             insample                                             1</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6:                  loo                                            NA</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7:          repeated_cv                           repeats,folds   100</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8:  repeated_spcv_block folds,repeats,rows,cols,range,selection    10</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9: repeated_spcv_coords                           folds,repeats    10</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10:    repeated_spcv_env                  folds,repeats,features    10</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11: repeated_sptcv_cluto                           folds,repeats    10</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12:  repeated_sptcv_cstf                           folds,repeats    10</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13:           spcv_block         folds,rows,cols,range,selection    10</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14:          spcv_buffer               theRange,spDataType,addBG     0</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15:          spcv_coords                                   folds    10</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16:             spcv_env                          folds,features    10</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17:          sptcv_cluto                                   folds    10</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18:           sptcv_cstf                                   folds    10</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19:          subsampling                           repeats,ratio    30</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(mlr_resamplings)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                      key                                  params iters</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1:            bootstrap                           repeats,ratio    30</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2:               custom                                             0</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3:                   cv                                   folds    10</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4:              holdout                                   ratio     1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5:             insample                                             1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6:                  loo                                            NA</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7:          repeated_cv                           repeats,folds   100</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8:  repeated_spcv_block folds,repeats,rows,cols,range,selection    10</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9: repeated_spcv_coords                           folds,repeats    10</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10:    repeated_spcv_env                  folds,repeats,features    10</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11: repeated_sptcv_cluto                           folds,repeats    10</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12:  repeated_sptcv_cstf                           folds,repeats    10</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13:           spcv_block         folds,rows,cols,range,selection    10</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14:          spcv_buffer               theRange,spDataType,addBG     0</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15:          spcv_coords                                   folds    10</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16:             spcv_env                          folds,features    10</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17:          sptcv_cluto                                   folds    10</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18:           sptcv_cstf                                   folds    10</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19:          subsampling                           repeats,ratio    30</span></span></code></pre></div>
 </div>
 <div id="examples-tasks" class="section level1">
 <h1>Examples Tasks</h1>
