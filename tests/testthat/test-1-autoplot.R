@@ -1,7 +1,7 @@
 # generic tests
 
 test_that("errors are thrown for non-valid argument settings", {
-  task = test_make_twoclass()
+  task = test_make_twoclass_task()
   # type does not matter here
   rsp = rsmp("spcv_coords")
   rsp$instantiate(task)
@@ -142,7 +142,7 @@ test_that("plot() works for 'repeated_spcv_block'", {
   set.seed(42)
 
   plots = prepare_autoplot("repeated_spcv_block",
-    folds = 4, range = c(2, 4), repeats = 2)
+    folds = 4, range = c(2L, 4L), repeats = 2)
 
   # autoplot() is used instead of plot() to prevent side-effect plotting
   p1 = autoplot(plots$rsp, plots$task, crs = 4326)

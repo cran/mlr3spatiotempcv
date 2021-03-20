@@ -17,25 +17,28 @@
 #' @family Task
 #' @export
 #' @examples
-#' data = mlr3::as_data_backend(ecuador)
-#' task = TaskClassifST$new("ecuador",
-#'   backend = data, target = "slides",
-#'   positive = "TRUE", extra_args = list(coordinate_names = c("x", "y"))
-#' )
+#' if (mlr3misc::require_namespaces(c("sf", "blockCV"), quietly = TRUE)) {
 #'
-#' # passing objects of class 'sf' is also supported
-#' data_sf = sf::st_as_sf(ecuador, coords = c("x", "y"), crs = 4326)
-#' task = TaskClassifST$new("ecuador_sf",
-#'   backend = data_sf, target = "slides", positive = "TRUE"
-#' )
+#'   data = mlr3::as_data_backend(ecuador)
+#'   task = TaskClassifST$new("ecuador",
+#'     backend = data, target = "slides",
+#'     positive = "TRUE", extra_args = list(coordinate_names = c("x", "y"))
+#'   )
 #'
-#' task$task_type
-#' task$formula()
-#' task$class_names
-#' task$positive
-#' task$negative
-#' task$coordinates()
-#' task$coordinate_names
+#'   # passing objects of class 'sf' is also supported
+#'   data_sf = sf::st_as_sf(ecuador, coords = c("x", "y"), crs = 4326)
+#'   task = TaskClassifST$new("ecuador_sf",
+#'     backend = data_sf, target = "slides", positive = "TRUE"
+#'   )
+#'
+#'   task$task_type
+#'   task$formula()
+#'   task$class_names
+#'   task$positive
+#'   task$negative
+#'   task$coordinates()
+#'   task$coordinate_names
+#' }
 TaskClassifST = R6::R6Class("TaskClassifST",
   inherit = TaskClassif,
 
@@ -71,7 +74,7 @@ TaskClassifST = R6::R6Class("TaskClassifST",
         # ensure a point feature has been passed
         checkmate::assert_character(as.character(sf::st_geometry_type(backend, by_geometry = FALSE)), fixed = "POINT") # nolint
         backend = sf::st_set_geometry(backend, NULL)
-        backend = merge(backend, coordinates)
+        backend = cbind(backend, coordinates)
         extra_args$coordinate_names = colnames(coordinates)
       }
 

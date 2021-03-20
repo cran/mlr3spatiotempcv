@@ -1,7 +1,7 @@
 Package: mlr3spatiotempcv
 Title: Spatiotemporal Resampling Methods for 'mlr3'
-Version: 0.2.0
-Date: 2021-03-07
+Version: 0.2.1
+Date: 2021-03-18
 Authors@R: 
     c(person(given = "Patrick",
              family = "Schratz",
@@ -37,8 +37,8 @@ Imports: checkmate, data.table, ggplot2, mlr3 (>= 0.7.0), mlr3misc (>=
         0.7.0), paradox, R6, utils
 Suggests: bbotk, blockCV (>= 2.1.1), CAST, ggsci, ggtext, GSIF, knitr,
         lgr, mlr3filters, mlr3pipelines, mlr3tuning, patchwork, plotly,
-        rmarkdown, rpart, sf, skmeans, testthat (>= 3.0.0), vdiffr,
-        withr
+        raster, rmarkdown, rpart, sf, skmeans, testthat (>= 3.0.0),
+        vdiffr, withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/testthat/parallel: true
@@ -46,11 +46,11 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
 RoxygenNote: 7.1.1
-Packaged: 2021-03-08 06:29:21 UTC; pjs
+Packaged: 2021-03-19 19:16:46 UTC; pjs
 Author: Patrick Schratz [aut, cre] (<https://orcid.org/0000-0003-0748-6624>),
   Marc Becker [aut] (<https://orcid.org/0000-0002-8115-0400>),
   Jannes Muenchow [ctb] (<https://orcid.org/0000-0001-7834-4717>),
   Michel Lang [ctb] (<https://orcid.org/0000-0001-9754-0393>)
 Maintainer: Patrick Schratz <patrick.schratz@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-03-08 06:50:02 UTC
+Date/Publication: 2021-03-20 17:40:02 UTC
