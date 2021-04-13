@@ -1,5 +1,25 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# mlr3spatiotempcv 0.3.0
+
+## New Features
+
+- `autoplot.ResamplingSptCVCstf()`: add 2D plotting method (#106)
+- `autoplot.ResamplingSptCVCstf()`: add arguments `show_omitted` and `static_image` (#100)
+- `autoplot()` (all methods): allow adjusting point size via `...` (#98)
+
+## Maintenance
+
+- Remove {GSIF} package due to CRAN archival and host the `cookfarm` dataset standalone
+- Use `Cstf` method for spatiotemporal viz vignette
+- Fix help page content of `ResamplingRepeatedSptCVCstf` (beforehand the Cluto method was referenced accidentally)
+- Fix segfault in `autoplot.ResamplingSpcvBlock` example when rendering pkgdown site (unclear why this happens when `show_labels = TRUE`)
+- Update `autoplot()` examples and related documentation
+- Remove duplicate resources in Tasks "see also" fields
+- Skip a test on Solaris and macOS 3.6
+- Optimize "Spatiotemporal Visualization" vignette
+
+
 # mlr3spatiotempcv 0.2.1
 
 - Add support for `rasterLayer` argument in `blockCV::spatialBlock()` (#94)

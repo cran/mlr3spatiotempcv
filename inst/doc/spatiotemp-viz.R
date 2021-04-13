@@ -4,21 +4,17 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-# don't run on mac
-os = ifelse(!Sys.info()[["sysname"]] == "Darwin", TRUE, FALSE)
-
-# - don't run on CRAN
-is_cran = ifelse(Sys.getenv("NOT_CRAN") != "", FALSE, TRUE)
-
-## ---- fig.align='center', eval=os&&!is_cran, fig.width=8, fig.height=9--------
+## ---- fig.align='center', eval=FALSE------------------------------------------
 #  library(mlr3)
 #  library(mlr3spatiotempcv)
 #  task_st = tsk("cookfarm")
-#  resampling = rsmp("sptcv_cluto", folds = 5, time_var = "Date")
+#  resampling = rsmp("sptcv_cstf",
+#    folds = 5, time_var = "Date",
+#    space_var = "SOURCEID")
 #  resampling$instantiate(task_st)
 #  
-#  pl = plot(resampling, task_st, c(1, 2, 3, 4),
-#    point_size = 3, axis_label_fontsize = 10)
+#  pl = autoplot(resampling, task_st, c(1, 2, 3, 4),
+#    crs = 4326, point_size = 3, axis_label_fontsize = 10)
 #  
 #  # Warnings can be ignored
 #  pl_subplot = plotly::subplot(pl)
@@ -47,9 +43,7 @@ is_cran = ifelse(Sys.getenv("NOT_CRAN") != "", FALSE, TRUE)
 #    )
 #  )
 
-## ---- eval=os&&!is_cran, echo=FALSE, results='asis'---------------------------
-#  cat("(The actual graphic here is only rendered on the pkgdown site: please visit https://mlr3spatiotempcv.mlr-org.com.)")
-
-## ---- eval=!os, results='asis', echo=FALSE------------------------------------
-cat("(The Cluto method does not work on macOS: please visit https://mlr3spatiotempcv.mlr-org.com to see the rendered plot.)")
+## ---- echo=FALSE, fig.align='center', fig.align='center'----------------------
+# plotly::orca(foo, "man/figures/sptcv_cstf_multiplot.png", width = 1200, height = 1200)
+knitr::include_graphics("../man/figures/sptcv_cstf_multiplot.png")
 

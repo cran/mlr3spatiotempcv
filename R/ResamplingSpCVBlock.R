@@ -5,6 +5,8 @@
 #' @references
 #' `r format_bib("valavi2018")`
 #'
+#' @importFrom utils capture.output
+#'
 #' @export
 #' @examples
 #' if (mlr3misc::require_namespaces(c("sf", "blockCV"), quietly = TRUE)) {
@@ -27,6 +29,12 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
   inherit = mlr3::Resampling,
 
   public = list(
+
+    #' @field blocks `sf | list of sf objects`\cr
+    #'  Polygons (`sf` objects) as returned by \pkg{blockCV} which grouped
+    #'  observations into partitions.
+    blocks = NULL,
+
     #' @description
     #' Create an "Environmental Block" resampling instance.
     #' @param id `character(1)`\cr
@@ -42,7 +50,10 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
           "checkerboard"), default = "random"),
         ParamUty$new("rasterLayer",
           default = NULL,
-          custom_check = function(x) checkmate::check_class(x, "RasterLayer", null.ok = TRUE))
+          custom_check = function(x) {
+            checkmate::check_class(x, "RasterLayer",
+              null.ok = TRUE)
+          })
       ))
       ps$values = list(folds = 10L)
       super$initialize(
@@ -58,7 +69,7 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
     #'  A task to instantiate.
     instantiate = function(task) {
 
-      assert_task(task)
+      mlr3::assert_task(task)
       checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
       pv = self$param_set$values
 
@@ -101,8 +112,10 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
         stopf("Grouping is not supported for spatial resampling methods.")
       }
       instance = private$.sample(
-        task$row_ids, task$coordinates(),
-        task$extra_args$crs)
+        task$row_ids,
+        task$coordinates(),
+        task$extra_args$crs
+      )
 
       self$instance = instance
       self$task_hash = task$hash
@@ -122,6 +135,7 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
 
   private = list(
     .sample = function(ids, coords, crs) {
+
       points = sf::st_as_sf(coords,
         coords = colnames(coords),
         crs = crs)
@@ -140,12 +154,21 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
           progress = FALSE,
           verbose = FALSE))))
 
+      # Warning: In st_point_on_surface.sfc(sf::st_zm(x)) :
+      # st_point_on_surface may not give correct results for
+      # longitude/latitude data
+      blocks_sf = suppressWarnings(sf::st_as_sf(inds$blocks, crs = crs))
+
+      self$blocks = blocks_sf
+
+      # to be able to plot the spatial block later in autoplot(),
+      # we need to return them here
       data.table(
         row_id = ids,
-        fold = inds$foldID # ,
-        # key = "fold"
+        fold = inds$foldID
       )
     },
+
     # private get funs for train and test which are used by
     # Resampling$.get_set()
     .get_train = function(i) {

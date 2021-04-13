@@ -3,13 +3,13 @@
 \docType{data}
 \name{mlr_tasks_cookfarm}
 \alias{mlr_tasks_cookfarm}
-\alias{cookfarm}
+\alias{cookfarm_sample}
 \title{Cookfarm Profiles Regression Task}
 \format{
 \link[R6:R6Class]{R6::R6Class} inheriting from \link{TaskRegr}.
 }
 \usage{
-data(cookfarm)
+data(cookfarm_sample)
 }
 \description{
 The R.J. Cook Agronomy Farm (cookfarm) is a Long-Term Agroecosystem Research
@@ -21,7 +21,8 @@ Here, only the "Profiles" dataset is used from the collection.
 The \code{Date} column was appended from the \code{readings} dataset.
 500 random samples were drawn from the complete sample.
 
-See \link[GSIF:cookfarm]{GSIF::cookfarm} for more detailed information.
+The dataset was borrowed and adapted from package GSIF which was on archived on
+CRAN in 2021-03.
 }
 \section{Usage}{
 \preformatted{mlr_tasks$get("cookfarm")
@@ -48,12 +49,6 @@ agricultural field. Submitted to Water Resources Research.
 \link[mlr3misc:Dictionary]{Dictionary} of \link[=Task]{Tasks}: \link{mlr_tasks}
 
 \code{as.data.table(mlr_tasks)} for a complete table of all (also dynamically created) \link[=Task]{Tasks}.
-
-Other Task: 
-\code{\link{TaskClassifST}},
-\code{\link{TaskRegrST}},
-\code{\link{mlr_tasks_diplodia}},
-\code{\link{mlr_tasks_ecuador}}
 
 Other Task: 
 \code{\link{TaskClassifST}},

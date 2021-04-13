@@ -89,20 +89,26 @@ test_that("mlr3spatiotempcv indices are the same as blockCV indices: cols and ro
 })
 
 test_that("mlr3spatiotempcv indices are the same as blockCV indices: rasterLayer", {
+
+  # cran test failure (Error: no arguments in initialization list)
+  testthat::skip_on_os("solaris")
+  # same issue on macOS 3.6
+  testthat::skip_if(as.numeric(R.version$major) < 4)
+
   set.seed(42)
 
   task = test_make_blockCV_test_task()
   testSF = test_make_blockCV_test_df()
 
-  r <- raster::raster(raster::extent(testSF), crs = "EPSG:4326")
-  r[] <- 10
+  rl <- raster::raster(raster::extent(testSF), crs = raster::crs(testSF))
+  vals <- seq_len(raster::ncell(rl))
+  rl = raster::setValues(rl, vals)
 
-  rsmp <- rsmp("spcv_block",
+  rsmp1 <- rsmp("spcv_block",
     range = 50000L,
     selection = "checkerboard",
-    rasterLayer = r)
-  rsmp$instantiate(task)
-
+    rasterLayer = rl)
+  rsmp1$instantiate(task)
 
   # blockCV
   capture.output(testBlock <- suppressMessages(
@@ -110,11 +116,11 @@ test_that("mlr3spatiotempcv indices are the same as blockCV indices: rasterLayer
       speciesData = testSF,
       theRange = 50000L,
       selection = "checkerboard",
-      rasterLayer = r,
+      rasterLayer = rl,
       showBlocks = FALSE,
       verbose = FALSE,
       progress = FALSE)
   ))
 
-  expect_equal(rsmp$instance$fold, testBlock$foldID)
+  expect_equal(rsmp1$instance$fold, testBlock$foldID)
 })

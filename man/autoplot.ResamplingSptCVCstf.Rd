@@ -20,6 +20,9 @@
   nticks_y = 3,
   point_size = 3,
   axis_label_fontsize = 11,
+  static_image = FALSE,
+  show_omitted = FALSE,
+  plot3D = NULL,
   ...
 )
 
@@ -27,7 +30,7 @@
   object,
   task,
   fold_id = NULL,
-  repeats_id = NULL,
+  repeats_id = 1,
   plot_as_grid = TRUE,
   train_color = "#0072B5",
   test_color = "#E18727",
@@ -37,6 +40,7 @@
   nticks_y = 3,
   point_size = 3,
   axis_label_fontsize = 11,
+  plot3D = NULL,
   ...
 )
 
@@ -57,8 +61,8 @@ Fold IDs to plot.}
 
 \item{plot_as_grid}{\verb{[logical(1)]}\cr
 Should a gridded plot using via \CRANpkg{patchwork} be created? If \code{FALSE}
-only a list with all \CRANpkg{ggplot2} resamplings is returned. Only applies
-if a numeric vector is passed to argument \code{fold_id}.}
+a list with of \CRANpkg{ggplot2} objects is returned.
+Only applies if a numeric vector is passed to argument \code{fold_id}.}
 
 \item{train_color}{\verb{[character(1)]}\cr
 The color to use for the training set observations.}
@@ -85,7 +89,23 @@ Point size of markers.}
 \item{axis_label_fontsize}{\verb{[integer]}\cr
 Font size of axis labels.}
 
-\item{...}{Not used.}
+\item{static_image}{\verb{[logical]}\cr
+Whether to create a static image from the plotly plot via \code{plotly::orca()}.
+This requires the \code{orca} utility to be available.
+See \url{https://github.com/plotly/orca} for
+more information.
+When used, by default a file named \code{plot.png} is created in the current
+working directory.}
+
+\item{show_omitted}{\verb{[logical]}\cr
+Whether to show points not used in train or test set for the current fold.}
+
+\item{plot3D}{\verb{[logical]}\cr
+Whether to create a 2D image via \pkg{ggplot2} or a 3D plot via
+\pkg{plotly}.}
+
+\item{...}{Passed down to \code{plotly::orca()}. Only effective when
+\code{static_image = TRUE}.}
 
 \item{repeats_id}{\verb{[numeric]}\cr
 Repetition ID to plot.}
@@ -95,21 +115,55 @@ mlr3 spatial resampling object of class \link{ResamplingSptCVCstf} or
 \link{ResamplingRepeatedSptCVCstf}.}
 }
 \description{
-Generic S3 \code{plot()} and \code{autoplot()} (ggplot2) methods.
+Generic S3 \code{plot()} and \code{autoplot()} (ggplot2) methods to
+visualize mlr3 spatiotemporal resampling objects.
 }
+\details{
+This method requires to set argument \code{fold_id} and no plot containing all
+partitions can be created. This is because the method does not make use of
+all observations but only a subset of them (many observations are left out).
+Hence, train and test sets of one fold are not re-used in other folds as in
+other methods and plotting these without a train/test indicator would not
+make sense.
+}
+\section{2D vs 3D plotting}{
+
+This method has both a 2D and a 3D plotting method.
+The 2D method returns a \pkg{ggplot} with x and y axes representing the spatial
+coordinates.
+The 3D method uses \pkg{plotly} to create an interactive 3D plot.
+Set \code{plot3D = TRUE} to use the 3D method.
+
+Note that spatiotemporal datasets usually suffer from overplotting in 2D
+mode.
+}
+
 \examples{
 \donttest{
-if (mlr3misc::require_namespaces(c("sf", "skmeans", "plotly"), quietly = TRUE)) {
+if (mlr3misc::require_namespaces(c("sf", "plotly"), quietly = TRUE)) {
   library(mlr3)
   library(mlr3spatiotempcv)
   task_st = tsk("cookfarm")
-  resampling = rsmp("sptcv_cstf", folds = 5, time_var = "Date")
+  resampling = rsmp("sptcv_cstf",
+    folds = 5, time_var = "Date",
+    space_var = "SOURCEID")
   resampling$instantiate(task_st)
 
-  # plot
-  autoplot(resampling, task_st)
-  autoplot(resampling, task_st, 1)
-  autoplot(resampling, task_st, c(1, 2))
+  # with both `space_var` and `time_var` (LLTO), the omitted observations per
+  # fold can be shown by setting `show_omitted = TRUE`
+  autoplot(resampling, task_st, fold_id = 1, show_omitted = TRUE)
 }
+}
+}
+\seealso{
+\itemize{
+\item mlr3book chapter on on \href{https://mlr3book.mlr-org.com/spatiotemporal.html#vis-spt-partitions}{"Spatiotemporal Visualization"}.
+\item Vignette \href{https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz.html}{Spatiotemporal Visualization}.
+\item \code{\link[=autoplot.ResamplingSpCVBlock]{autoplot.ResamplingSpCVBlock()}}
+\item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}
+\item \code{\link[=autoplot.ResamplingSpCVCoords]{autoplot.ResamplingSpCVCoords()}}
+\item \code{\link[=autoplot.ResamplingSpCVEnv]{autoplot.ResamplingSpCVEnv()}}
+\item \code{\link[=autoplot.ResamplingCV]{autoplot.ResamplingCV()}}
+\item \code{\link[=autoplot.ResamplingSptCVCluto]{autoplot.ResamplingSptCVCluto()}}
 }
 }

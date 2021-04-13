@@ -7,10 +7,10 @@ test_that("errors are thrown for non-valid argument settings", {
   rsp$instantiate(task)
 
   # these error checks apply to all resampling methods.
-  expect_message(plot(rsp, task))
-  expect_error(plot(rsp, task, 30))
-  expect_error(plot(rsp, task, c(1, 30)))
-  expect_list(plot(rsp, task, c(1, 2), plot_as_grid = FALSE))
+  expect_message(autoplot(rsp, task))
+  expect_error(plot(rsp, task, 30, crs = 4326))
+  expect_error(plot(rsp, task, c(1, 30), crs = 4326))
+  expect_list(autoplot(rsp, task, c(1, 2), plot_as_grid = FALSE, crs = 4326))
 })
 
 # cv ---------------------------------------------------------------------------
@@ -166,6 +166,47 @@ test_that("plot() works for 'repeated_spcv_block'", {
   vdiffr::expect_doppelganger("RepSpCVBlock - Fold 1, Rep 2", p5)
 })
 
+test_that("autplot blockCV shows correct blocks", {
+  skip_if_not_installed("vdiffr")
+  task = test_make_blockCV_test_task()
+
+  set.seed(42)
+  rsmp <- rsmp("spcv_block",
+    folds = 5,
+    rows = 3,
+    cols = 4)
+  rsmp$instantiate(task)
+
+  p1 = autoplot(rsmp, task,
+    fold_id = 1, size = 0.7,
+    show_blocks = TRUE, crs = 4326)
+
+  vdiffr::expect_doppelganger(
+    "autoplot show_blocks = TRUE show_labels = TRUE",
+    p1)
+})
+
+test_that("autplot blockCV shows correct blocks for repeated_cv", {
+  skip_if_not_installed("vdiffr")
+  task = test_make_blockCV_test_task()
+
+  set.seed(42)
+  rsmp <- rsmp("repeated_spcv_block",
+    folds = 5,
+    repeats = 2,
+    rows = 3,
+    cols = 4)
+  rsmp$instantiate(task)
+
+  p1 = autoplot(rsmp, task,
+    fold_id = 1, size = 0.7, repeats_id = 2,
+    show_blocks = TRUE, crs = 4326, show_labels = TRUE)
+
+  vdiffr::expect_doppelganger(
+    "autoplot repeated show_blocks = TRUE show_labels = TRUE",
+    p1)
+})
+
 # spcv_env ---------------------------------------------------------------------
 
 test_that("plot() works for 'spcv_env'", {
@@ -219,6 +260,74 @@ test_that("plot() works for 'repeated_spcv_env'", {
 
 # sptcv_cstf -------------------------------------------------------------------
 
+# 2D -------------------------------------------------------------------------
+test_that("plot() works for 'sptcv_cstf' 2D - time_var", {
+  skip_if_not_installed("vdiffr")
+
+  # for some reason linux and windows svgs differ
+  skip_on_os("linux")
+  skip_on_os("windows")
+
+  set.seed(42)
+
+  task = tsk("cookfarm")
+  rsp = rsmp("sptcv_cstf", folds = 4, time_var = "Date")
+  rsp$instantiate(task)
+
+  p1 = autoplot(rsp, task = task, crs = 4326)
+  p2 = autoplot(rsp, task, 1, crs = 4326, plot3D = FALSE)
+  # plot() would force image printing here
+  p3 = autoplot(rsp, task, c(1, 2), crs = 4326)
+
+  expect_true(is.ggplot(p1))
+  expect_true(is.ggplot(p2))
+  expect_list(p3)
+
+  p4 = autoplot(rsp, task, crs = 4326, repeats_id = 2)
+  p5 = autoplot(rsp, task, crs = 4326, fold_id = 1, repeats_id = 2)
+
+  vdiffr::expect_doppelganger("SptCVCstf 2D time_var all test sets", p1)
+  vdiffr::expect_doppelganger("SptCVCstf 2D time_var - Fold 1", p2)
+  vdiffr::expect_doppelganger("SptCVCstf 2D time_var - Fold 1-2", p3)
+  vdiffr::expect_doppelganger("RepSptCVCstf 2D time_var - Fold 1-2, Rep 2", p4)
+  vdiffr::expect_doppelganger("RepSptCVCstf 2D time_var - Fold 1, Rep 2", p5)
+})
+
+test_that("plot() works for 'sptcv_cstf' 2D - space_var", {
+  skip_if_not_installed("vdiffr")
+
+  # for some reason linux and windows svgs differ
+  skip_on_os("linux")
+  skip_on_os("windows")
+
+  set.seed(42)
+
+  task = tsk("cookfarm")
+  rsp = rsmp("sptcv_cstf", folds = 4, space_var = "SOURCEID")
+  rsp$instantiate(task)
+
+  p1 = autoplot(rsp, task = task, crs = 4326)
+  p2 = autoplot(rsp, task, 1, crs = 4326, plot3D = FALSE)
+  # plot() would force image printing here
+  p3 = autoplot(rsp, task, c(1, 2), crs = 4326)
+
+  expect_true(is.ggplot(p1))
+  expect_true(is.ggplot(p2))
+  expect_list(p3)
+
+  p4 = autoplot(rsp, task, crs = 4326, repeats_id = 2)
+  p5 = autoplot(rsp, task, crs = 4326, fold_id = 1, repeats_id = 2)
+
+
+  vdiffr::expect_doppelganger("SptCVCstf 2D space_var all test sets", p1)
+  vdiffr::expect_doppelganger("SptCVCstf 2D space_var - Fold 1", p2)
+  vdiffr::expect_doppelganger("SptCVCstf 2D space_var - Fold 1-2", p3)
+  vdiffr::expect_doppelganger("RepSptCVCstf 2D space_var - Fold 1-2, Rep 2", p4)
+  vdiffr::expect_doppelganger("RepSptCVCstf 2D space_var - Fold 1, Rep 2", p5)
+})
+
+# 3D ---------------------------------------------------------------------------
+
 test_that("plot() works for 'sptcv_cstf'", {
   skip_if_not_installed("vdiffr")
   set.seed(42)
@@ -227,16 +336,15 @@ test_that("plot() works for 'sptcv_cstf'", {
   rsp = rsmp("sptcv_cstf", folds = 4, time_var = "Date")
   rsp$instantiate(task)
 
-  p1 = plot(rsp, task = task, crs = 4326)
-  p2 = plot(rsp, task, 1, crs = 4326)
+  expect_error(autoplot(rsp, task = task, crs = 4326, plot3D = TRUE))
+  p2 = autoplot(rsp, task, 1, crs = 4326, plot3D = TRUE)
   # plot() would force image printing here
-  p3 = autoplot(rsp, task, c(1, 2), crs = 4326)
+  p3 = suppressMessages(autoplot(rsp, task, c(1, 2), crs = 4326, plot3D = TRUE))
 
-  expect_s3_class(p1, "plotly")
   expect_s3_class(p2, "plotly")
   expect_list(p3)
 
-  vdiffr::expect_doppelganger("SptCVCstf all test sets", p1)
+  # vdiffr::expect_doppelganger("SptCVCstf all test sets", p1)
   vdiffr::expect_doppelganger("SptCVCstf - Fold 1", p2)
   vdiffr::expect_doppelganger("SptCVCstf - Fold 1-2", p3)
 })
@@ -249,25 +357,52 @@ test_that("plot() works for 'repeated_spcv_cstf'", {
   rsp = rsmp("repeated_sptcv_cstf", folds = 4, repeats = 2, time_var = "Date")
   rsp$instantiate(task)
 
-  p1 = autoplot(rsp, task = task, crs = 4326)
-  p2 = autoplot(rsp, task, 1) # missing on purpose for codecov reasons
-  # plot() would force image printing here
-  p3 = autoplot(rsp, task, c(1, 2), crs = 4326)
-  p4 = autoplot(rsp, task, c(1, 2), crs = 4326, plot_as_grid = FALSE)
+  expect_error(autoplot(rsp, task = task, crs = 4326, plot3D = TRUE))
+  p2 = autoplot(rsp, task, 1,
+    show_omitted = TRUE, plot3D = TRUE,
+    repeats_id = 2) # missing on purpose for codecov reasons
+  p3 = suppressMessages(autoplot(rsp, task, c(1, 2), crs = 4326, plot3D = TRUE))
+  p4 = autoplot(rsp, task, c(1, 2),
+    crs = 4326, plot_as_grid = FALSE,
+    repeats_id = 2,
+    plot3D = TRUE)
 
-  expect_s3_class(p1, "plotly")
   expect_s3_class(p2, "plotly")
   expect_list(p3)
 
-  p4 = autoplot(rsp, task, repeats_id = 2, crs = 4326)
-  p5 = autoplot(rsp, task, fold_id = 1, repeats_id = 2, crs = 4326)
+  p5 = autoplot(rsp, task,
+    fold_id = 1, repeats_id = 2, crs = 4326,
+    plot3D = TRUE)
 
-  expect_s3_class(p4, "plotly")
   expect_s3_class(p5, "plotly")
 
-  vdiffr::expect_doppelganger("RepSptCVCstf all test sets", p1)
+  # vdiffr::expect_doppelganger("RepSptCVCstf all test sets", p1)
   vdiffr::expect_doppelganger("RepSptCVCstf Fold 1 Rep 1", p2)
   vdiffr::expect_doppelganger("RepSptCVCstf - Fold 1-2 Rep 1", p3)
   vdiffr::expect_doppelganger("RepSptCVCstf - Fold 1-2, Rep 2", p4)
   vdiffr::expect_doppelganger("RepSptCVCstf - Fold 1, Rep 2", p5)
+})
+
+test_that("autoplot time + space", {
+  # special data with five temporal levels
+  data = cookfarm_sample
+  data$Date = rep(c(
+    "2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01",
+    "2020-05-01"), times = 1, each = 100)
+  b = mlr3::as_data_backend(data)
+  b$hash = "_mlr3_tasks_cookfarm_"
+  task = TaskRegrST$new(
+    id = "cookfarm", b, target = "PHIHOX",
+    extra_args = list(
+      coordinate_names = c("x", "y"), coords_as_features = FALSE,
+      crs = 26911))
+
+  rsp = rsmp("sptcv_cstf", folds = 5, time_var = "Date", space_var = "SOURCEID")
+  set.seed(42)
+  rsp$instantiate(task)
+
+  # without omitted, we have no values on the y-axis and the plot is not shown
+  p1 = autoplot(rsp, task, fold_id = 5, show_omitted = TRUE, plot3D = TRUE)
+
+  vdiffr::expect_doppelganger("SptCVCstf - + omitted points, 3D", p1)
 })
