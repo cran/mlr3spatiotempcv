@@ -1,4 +1,4 @@
-#' @title Spatioemporal Cluster Resampling
+#' @title (skmeans) Spatiotemporal clustering resampling
 #'
 #' @template rox_sptcv_cluto
 #'
@@ -29,7 +29,6 @@
 #' }
 ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
   inherit = mlr3::Resampling,
-
   public = list(
 
     #' @field time_var [character]\cr
@@ -88,7 +87,8 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
 
       super$initialize(
         id = id,
-        param_set = ps
+        param_set = ps,
+        man = "mlr3spatiotempcv::mlr_resamplings_sptcv_cluto"
       )
     },
 
@@ -109,12 +109,19 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
         stopf("Grouping is not supported for spatial resampling methods") # nocov # nolint
       }
 
-      time = as.POSIXct(task$data()[[self$time_var]])
-      # time in seconds since 1/1/1970
-      time_num = as.numeric(time)
+      if (!is.null(self$time_var)) {
 
-      data_matrix = data.matrix(data.frame(task$coordinates(), time_num))
+        time = as.POSIXct(task$data()[[self$time_var]])
+        # time in seconds since 1/1/1970
+        time_num = as.numeric(time)
+
+        data_matrix = data.matrix(data.frame(task$coordinates(), time_num))
       colnames(data_matrix) = c("x", "y", "z")
+      } else {
+        data_matrix = data.matrix(data.frame(task$coordinates()))
+
+      colnames(data_matrix) = c("x", "y")
+      }
 
       instance = private$.sample(
         task$row_ids, data_matrix, self$clmethod,
@@ -124,18 +131,14 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
       self$task_hash = task$hash
       self$task_nrow = task$nrow
       invisible(self)
-    }
-  ),
-
+    }),
   active = list(
     #' @field iters `integer(1)`\cr
     #'   Returns the number of resampling iterations, depending on the
     #'   values stored in the `param_set`.
     iters = function() {
       self$param_set$values$folds
-    }
-  ),
-
+    }),
   private = list(
     .sample = function(ids, data_matrix, clmethod, cluto_parameters, verbose) {
       vcluster_loc = check_cluto_path()
@@ -167,9 +170,7 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
     .get_train = function(i) {
       self$instance[!list(i), "row_id", on = "fold"][[1L]]
     },
-
     .get_test = function(i) {
       self$instance[list(i), "row_id", on = "fold"][[1L]]
-    }
-  )
+    })
 )

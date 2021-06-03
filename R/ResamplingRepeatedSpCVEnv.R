@@ -1,4 +1,4 @@
-#' @title Repeated Environmental Block Cross Validation Resampling
+#' @title (blockCV) Repeated "environmental blocking" resampling
 #'
 #' @template rox_spcv_env
 #'
@@ -25,10 +25,11 @@
 #' }
 ResamplingRepeatedSpCVEnv = R6Class("ResamplingRepeatedSpCVEnv",
   inherit = mlr3::Resampling,
-
   public = list(
     #' @description
-    #' Create an "coordinate-based" repeated resampling instance.
+    #' Create an "Environmental Block" repeated resampling instance.
+    #'
+    #' For a list of available arguments, please see [blockCV::envBlock].
     #' @param id `character(1)`\cr
     #'   Identifier for the resampling strategy.
     initialize = function(id = "repeated_spcv_env") {
@@ -50,7 +51,7 @@ ResamplingRepeatedSpCVEnv = R6Class("ResamplingRepeatedSpCVEnv",
     #'   Iteration number.
     folds = function(iters) {
       iters = assert_integerish(iters, any.missing = FALSE, coerce = TRUE)
-      ((iters - 1L) %% as.integer(self$param_set$values$repeats)) + 1L
+      ((iters - 1L) %% as.integer(self$param_set$values$folds)) + 1L
     },
 
     #' @description Translates iteration numbers to repetition number.
@@ -99,7 +100,6 @@ ResamplingRepeatedSpCVEnv = R6Class("ResamplingRepeatedSpCVEnv",
       invisible(self)
     }
   ),
-
   active = list(
 
     #' @field iters `integer(1)`\cr
@@ -110,7 +110,6 @@ ResamplingRepeatedSpCVEnv = R6Class("ResamplingRepeatedSpCVEnv",
       as.integer(pv$repeats) * as.integer(pv$folds)
     }
   ),
-
   private = list(
     .sample = function(ids, data) {
       pv = self$param_set$values
@@ -123,7 +122,6 @@ ResamplingRepeatedSpCVEnv = R6Class("ResamplingRepeatedSpCVEnv",
         )
       })
     },
-
     .get_train = function(i) {
       i = as.integer(i) - 1L
       folds = as.integer(self$param_set$values$folds)
@@ -132,7 +130,6 @@ ResamplingRepeatedSpCVEnv = R6Class("ResamplingRepeatedSpCVEnv",
       ii = data.table(rep = rep, fold = seq_len(folds)[-fold])
       self$instance[ii, "row_id", on = names(ii), nomatch = 0L][[1L]]
     },
-
     .get_test = function(i) {
       i = as.integer(i) - 1L
       folds = as.integer(self$param_set$values$folds)

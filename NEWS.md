@@ -1,5 +1,28 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# mlr3spatiotempcv 0.4.0
+
+## Features
+
+- Support clustering coords only for `"sptcv_cluto"`
+- Add `as_task_*` S3 generics: `as_task_classif_st.data.frame()`, `as_task_classif_st.DataBackend()`, `as_task_classif_st.sf()`, `as_task_regr_st.data.frame()`, `as_task_regr_st.DataBackend()`, `as_task_regr_st.sf()`, `as_task_classif.TaskClassifST()`, `as_task_regr.TaskRegrST()` (#99)
+- Add `"spcv_tiles"` and `"repeated_spcv_tiles"` (#121)
+- Add `"spcv_disc"` (#115)
+
+## Bug Fixes
+
+- Fixed train set issues for `sptcv_cstf()` with space and time var (#135)
+- Fixed `$folds()` active binding returning wrong fold number (#120)
+- Add missing `man` IDs (#122)
+
+## Misc
+
+- Add example 2D spatial plots to spatiotemp-viz vignette
+- Add {caret} to Suggests
+- "Cstf" methods: remove arguments in favor of param set to align with other methods (#122)
+- Inherit documentation from upstream functions (#117)
+- Vignette: Update and categorize table listing all implemented methods
+
 # mlr3spatiotempcv 0.3.0
 
 ## New Features
