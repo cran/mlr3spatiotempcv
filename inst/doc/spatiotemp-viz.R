@@ -14,7 +14,9 @@ knitr::opts_chunk$set(
 #  resampling$instantiate(task_st)
 #  
 #  pl = autoplot(resampling, task_st, c(1, 2, 3, 4),
-#    crs = 4326, point_size = 3, axis_label_fontsize = 10)
+#    crs = 4326, point_size = 3, axis_label_fontsize = 10,
+#    plot3D = TRUE
+#  )
 #  
 #  # Warnings can be ignored
 #  pl_subplot = plotly::subplot(pl)
