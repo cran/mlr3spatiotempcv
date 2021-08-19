@@ -110,6 +110,13 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
           stopf("'nrow' * 'ncol' needs to be larger than 'folds'.") # nocov
         }
       }
+      # checkerboard option only allows for two folds
+      if (self$param_set$values$selection == "checkerboard" &&
+        pv$folds > 2) {
+        mlr3misc::stopf("'selection = checkerboard' only allows for two folds.
+          Setting argument 'folds' to a value larger than would result in an empty test set.",
+          wrap = TRUE)
+      }
 
       groups = task$groups
 
@@ -141,7 +148,8 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
 
       points = sf::st_as_sf(coords,
         coords = colnames(coords),
-        crs = crs)
+        crs = crs
+      )
       # Suppress print message, warning crs and package load
       # Note: Do not replace the assignment operator here.
       capture.output(inds <- suppressMessages((
@@ -160,7 +168,7 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
       # Warning: In st_point_on_surface.sfc(sf::st_zm(x)) :
       # st_point_on_surface may not give correct results for
       # longitude/latitude data
-      blocks_sf = suppressWarnings(sf::st_as_sf(inds$blocks, crs = crs))
+      blocks_sf = suppressWarnings(sf::st_as_sf(inds$blocks))
 
       self$blocks = blocks_sf
 

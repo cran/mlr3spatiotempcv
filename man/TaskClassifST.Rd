@@ -26,7 +26,7 @@ if (mlr3misc::require_namespaces(c("sf", "blockCV"), quietly = TRUE)) {
   )
 
   # passing objects of class 'sf' is also supported
-  data_sf = sf::st_as_sf(ecuador, coords = c("x", "y"), crs = 4326)
+  data_sf = sf::st_as_sf(ecuador, coords = c("x", "y"))
   task = TaskClassifST$new("ecuador_sf",
     backend = data_sf, target = "slides", positive = "TRUE"
   )
@@ -72,6 +72,7 @@ Required for \code{\link[=convert_task]{convert_task()}}.}
 \if{html}{
 \out{<details ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="add_strata">}\href{../../mlr3/html/Task.html#method-add_strata}{\code{mlr3::Task$add_strata()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="cbind">}\href{../../mlr3/html/Task.html#method-cbind}{\code{mlr3::Task$cbind()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="filter">}\href{../../mlr3/html/Task.html#method-filter}{\code{mlr3::Task$filter()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="format">}\href{../../mlr3/html/Task.html#method-format}{\code{mlr3::Task$format()}}\out{</span>}

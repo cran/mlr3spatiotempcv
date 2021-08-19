@@ -176,7 +176,7 @@ div.csl-indent {
 </ul>
 <p>To create one of these, one can either pass a <code>sf</code> object as the “backend” directly:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create &#39;sf&#39; object</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data_sf <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(ecuador, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data_sf <span class="ot">=</span> sf<span class="sc">::</span><span class="fu">st_as_sf</span>(ecuador, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>))</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create mlr3 task</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>task <span class="ot">=</span> TaskClassifST<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;ecuador_sf&quot;</span>,</span>
