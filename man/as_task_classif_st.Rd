@@ -44,10 +44,10 @@ as_task_classif_st(x, ...)
 )
 }
 \arguments{
-\item{x}{(\code{any})\cr
+\item{x}{(any)\cr
 Object to convert.}
 
-\item{...}{(\code{any})\cr
+\item{...}{(any)\cr
 Additional arguments.}
 
 \item{clone}{(\code{logical(1)})\cr
@@ -58,7 +58,7 @@ Name of the target column.}
 
 \item{id}{(\code{character(1)})\cr
 Id for the new task.
-Defaults to the (deparsed and substituted) name of \code{x}.}
+Defaults to the (deparsed and substituted) name of the data argument.}
 
 \item{positive}{(\code{character(1)})\cr
 Level of the positive class. See \link[mlr3]{TaskClassif}.}

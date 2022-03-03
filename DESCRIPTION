@@ -1,7 +1,7 @@
 Package: mlr3spatiotempcv
 Title: Spatiotemporal Resampling Methods for 'mlr3'
-Version: 1.0.0
-Date: 2021-08-19
+Version: 1.0.1
+Date: 2022-03-02
 Authors@R: 
     c(person(given = "Patrick",
              family = "Schratz",
@@ -45,12 +45,12 @@ Config/testthat/parallel: true
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
-RoxygenNote: 7.1.1
-Packaged: 2021-08-19 14:16:30 UTC; pjs
+RoxygenNote: 7.1.2
+Packaged: 2022-03-03 13:59:13 UTC; pjs
 Author: Patrick Schratz [aut, cre] (<https://orcid.org/0000-0003-0748-6624>),
   Marc Becker [aut] (<https://orcid.org/0000-0002-8115-0400>),
   Jannes Muenchow [ctb] (<https://orcid.org/0000-0001-7834-4717>),
   Michel Lang [ctb] (<https://orcid.org/0000-0001-9754-0393>)
 Maintainer: Patrick Schratz <patrick.schratz@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-08-19 17:00:02 UTC
+Date/Publication: 2022-03-03 14:40:02 UTC

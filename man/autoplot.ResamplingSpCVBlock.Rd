@@ -86,7 +86,7 @@ By default a plot is returned; if \code{fold_id} is set, a gridded plot is
 created. If \code{plot_as_grid = FALSE}, a list of plot objects is returned.
 This can be used to align the plots individually.
 
-When no single fold is selected, the \code{\link[ggsci:scale_ucscgb]{ggsci::scale_color_ucscgb()}} palette
+When no single fold is selected, the \code{\link[ggsci:scale_color_ucscgb]{ggsci::scale_color_ucscgb()}} palette
 is used to display all partitions.
 If you want to change the colors, call \verb{<plot> + <color-palette>()}.
 }
@@ -120,7 +120,7 @@ if (mlr3misc::require_namespaces(c("sf", "blockCV"), quietly = TRUE)) {
 }
 \seealso{
 \itemize{
-\item mlr3book chapter on on \href{https://mlr3book.mlr-org.com/spatiotemporal.html#vis-spt-partitions}{"Spatiotemporal Visualization"}.
+\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/special-tasks.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
 \item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}
 \item \code{\link[=autoplot.ResamplingSpCVCoords]{autoplot.ResamplingSpCVCoords()}}
 \item \code{\link[=autoplot.ResamplingSpCVEnv]{autoplot.ResamplingSpCVEnv()}}
