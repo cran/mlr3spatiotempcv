@@ -1,7 +1,13 @@
 #' @title (sperrorest) Repeated spatial "disc" resampling
 #'
+#' @name mlr_resamplings_repeated_spcv_disc
 #' @references
 #' `r format_bib("brenning2012")`
+#'
+#' @section Parameters:
+#'
+#' * `repeats` (`integer(1)`)\cr
+#'   Number of repeats.
 #'
 #' @export
 #' @examples
@@ -54,6 +60,7 @@ ResamplingRepeatedSpCVDisc = R6Class("ResamplingRepeatedSpCVDisc",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Repeated Spatial 'disc' resampling",
         man = "mlr3spatiotempcv::mlr_resamplings_repeated_spcv_disc"
       )
     },
@@ -81,7 +88,7 @@ ResamplingRepeatedSpCVDisc = R6Class("ResamplingRepeatedSpCVDisc",
     instantiate = function(task) {
 
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       groups = task$groups
       if (!is.null(groups)) {
         stopf("Grouping is not supported for spatial resampling methods.") # nocov
@@ -116,8 +123,6 @@ ResamplingRepeatedSpCVDisc = R6Class("ResamplingRepeatedSpCVDisc",
       # declare empty list so the for-loop can write to its fields
       self$instance = vector("list", length = reps)
 
-      # k = self$param_set$values$folds
-
       for (rep in seq_len(reps)) {
         index = sample.int(nrow(coords),
           size = self$param_set$values$folds,
@@ -130,6 +135,8 @@ ResamplingRepeatedSpCVDisc = R6Class("ResamplingRepeatedSpCVDisc",
         # the index is required for assigning the train/test sets to their
         # respective folds
         mlr3_index = 1
+
+        ### start: this part is mainly copied from sperrorest::partition_disc()
 
         for (i in index) {
           if (!is.null(self$param_set$values$buffer) |
@@ -158,6 +165,8 @@ ResamplingRepeatedSpCVDisc = R6Class("ResamplingRepeatedSpCVDisc",
               wrap = TRUE
             )
           }
+
+          ### end: this part is mainly copied from sperrorest::partition_disc()
 
           # similar result structure as in sptcv_cstf
           self$instance[[rep]]$test[[mlr3_index]] = test_sel

@@ -1,6 +1,7 @@
-#' @title (skmeans) Repeated spatiotemporal clustering resampling
+#' @title (skmeans) Repeated spatiotemporal clustering resampling via CLUTO
 #'
 #' @template rox_sptcv_cluto
+#' @name mlr_resamplings_repeated_sptcv_cluto
 #'
 #' @references
 #' `r format_bib("zhao2002")`
@@ -11,11 +12,12 @@
 #' if (mlr3misc::require_namespaces("skmeans", quietly = TRUE)) {
 #'   library(mlr3)
 #'   library(mlr3spatiotempcv)
-#'   task = tsk("cookfarm")
+#'   task = tsk("cookfarm_mlr3")
+#'   task$set_col_roles("Date", "time")
 #'
 #'   # Instantiate Resampling
 #'   rrcv = rsmp("repeated_sptcv_cluto", folds = 3, repeats = 5)
-#'   rrcv$instantiate(task, time_var = "Date")
+#'   rrcv$instantiate(task)
 #'
 #'   # Individual sets:
 #'   rrcv$iters
@@ -34,11 +36,6 @@
 ResamplingRepeatedSptCVCluto = R6Class("ResamplingRepeatedSptCVCluto",
   inherit = mlr3::Resampling,
   public = list(
-
-    #' @field time_var [character]\cr
-    #'  The name of the variable which represents the time dimension.
-    #'  Must be of type numeric.
-    time_var = NULL,
 
     #' @field clmethod [character]\cr
     #'   Name of the clustering method to use within `vcluster`.
@@ -60,9 +57,6 @@ ResamplingRepeatedSptCVCluto = R6Class("ResamplingRepeatedSptCVCluto",
     #' Create an repeated resampling instance using the CLUTO algorithm.
     #' @param id `character(1)`\cr
     #'   Identifier for the resampling strategy.
-    #' @param time_var [character]\cr
-    #'  The name of the variable which represents the time dimension.
-    #'  Must be of type numeric.
     #' @param clmethod [character]\cr
     #'   Name of the clustering method to use within `vcluster`.
     #'   See Details for more information.
@@ -74,7 +68,6 @@ ResamplingRepeatedSptCVCluto = R6Class("ResamplingRepeatedSptCVCluto",
     #' @param verbose [logical]\cr
     #'   Whether to show `vcluster` progress and summary output.
     initialize = function(id = "repeated_sptcv_cluto",
-      time_var = NULL,
       clmethod = "direct",
       cluto_parameters = NULL,
       verbose = TRUE) {
@@ -85,7 +78,6 @@ ResamplingRepeatedSptCVCluto = R6Class("ResamplingRepeatedSptCVCluto",
       ))
       ps$values = list(folds = 10L, repeats = 1)
 
-      self$time_var = time_var
       self$clmethod = clmethod
       self$cluto_parameters = cluto_parameters
       self$verbose = verbose
@@ -93,6 +85,7 @@ ResamplingRepeatedSptCVCluto = R6Class("ResamplingRepeatedSptCVCluto",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Repeated spatiotemporal clustering resampling via CLUTO",
         man = "mlr3spatiotempcv::mlr_resamplings_repeated_sptcv_cluto"
       )
     },
@@ -117,38 +110,30 @@ ResamplingRepeatedSptCVCluto = R6Class("ResamplingRepeatedSptCVCluto",
     #'  Materializes fixed training and test splits for a given task.
     #' @param task [Task]\cr
     #'  A task to instantiate.
-    #' @param time_var [character]\cr
-    #'  The name of the variable which represents the time dimension.
-    #'  Must be of type numeric.
-    #' @param clmethod [character]\cr
-    #'   Name of the clustering method to use within `vcluster`.
-    #'   See Details for more information.
-    #' @param cluto_parameters [character]\cr
-    #'   Additional parameters to pass to `vcluster`.
-    #'   Must be given as a single character string, e.g.
-    #'   `"param1='value1'param2='value2'"`.
-    #'   See the CLUTO documentation for a full list of supported parameters.
-    #' @param verbose [logical]\cr
-    #'   Whether to show `vcluster` progress and summary output.
     instantiate = function(task) {
 
       mlr3misc::require_namespaces("skmeans", quietly = TRUE)
 
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
-      checkmate::assert_subset(self$time_var, choices = task$feature_names)
+      assert_spatial_task(task)
       groups = task$groups
 
       if (!is.null(groups)) {
         stopf("Grouping is not supported for spatial resampling methods") # nocov
       }
+      if (!is.null(task$col_roles$time)) {
 
-      time = as.POSIXct(task$data()[[self$time_var]])
-      # time in seconds since 1/1/1970
-      time_num = as.numeric(time)
+        time = as.POSIXct(task$data(cols = task$col_roles$time)[[task$col_roles$time]])
+        # time in seconds since 1/1/1970
+        time_num = as.numeric(time)
 
-      data_matrix = data.matrix(data.frame(task$coordinates(), time_num))
-      colnames(data_matrix) = c("x", "y", "z")
+        data_matrix = data.matrix(data.frame(task$coordinates(), time_num))
+        colnames(data_matrix) = c("x", "y", "z")
+      } else {
+        data_matrix = data.matrix(data.frame(task$coordinates()))
+
+        colnames(data_matrix) = c("x", "y")
+      }
 
       instance = private$.sample(
         task$row_ids, data_matrix, self$clmethod, self$cluto_parameters,

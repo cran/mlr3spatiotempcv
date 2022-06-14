@@ -8,12 +8,12 @@ This task specializes \link{Task} and \link{TaskSupervised} for spatiotemporal
 classification problems.
 
 A spatial example task is available via \code{tsk("ecuador")}, a spatiotemporal
-one via \code{tsk("cookfarm")}.
+one via \code{tsk("cookfarm_mlr3")}.
 
 The coordinate reference system passed during initialization must match the
 one which was used during data creation, otherwise offsets of multiple meters
 may occur. By default, coordinates are not used as features. This can be
-changed by setting \code{extra_args$coords_as_features = TRUE}.
+changed by setting \code{coords_as_features = TRUE}.
 }
 \seealso{
 Other Task: 
@@ -26,112 +26,129 @@ Other Task:
 \section{Super classes}{
 \code{\link[mlr3:Task]{mlr3::Task}} -> \code{\link[mlr3:TaskSupervised]{mlr3::TaskSupervised}} -> \code{\link[mlr3:TaskRegr]{mlr3::TaskRegr}} -> \code{TaskRegrST}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{extra_args}}{(named \code{list()})\cr
-Additional task arguments set during construction.
-Required for \code{\link[=convert_task]{convert_task()}}.}
+\item{\code{crs}}{(\code{character(1)})\cr
+Returns coordinate reference system of task.}
+
+\item{\code{coordinate_names}}{(\code{character()})\cr
+Coordinate names.}
+
+\item{\code{coords_as_features}}{(\code{logical(1)})\cr
+If \code{TRUE}, coordinates are used as features.}
 }
 \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{TaskRegrST$new()}}
-\item \href{#method-coordinates}{\code{TaskRegrST$coordinates()}}
-\item \href{#method-print}{\code{TaskRegrST$print()}}
-\item \href{#method-clone}{\code{TaskRegrST$clone()}}
+\item \href{#method-TaskRegrST-new}{\code{TaskRegrST$new()}}
+\item \href{#method-TaskRegrST-coordinates}{\code{TaskRegrST$coordinates()}}
+\item \href{#method-TaskRegrST-print}{\code{TaskRegrST$print()}}
+\item \href{#method-TaskRegrST-clone}{\code{TaskRegrST$clone()}}
 }
 }
-\if{html}{
-\out{<details ><summary>Inherited methods</summary>}
-\itemize{
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="add_strata">}\href{../../mlr3/html/Task.html#method-add_strata}{\code{mlr3::Task$add_strata()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="cbind">}\href{../../mlr3/html/Task.html#method-cbind}{\code{mlr3::Task$cbind()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="data">}\href{../../mlr3/html/Task.html#method-data}{\code{mlr3::Task$data()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="droplevels">}\href{../../mlr3/html/Task.html#method-droplevels}{\code{mlr3::Task$droplevels()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="filter">}\href{../../mlr3/html/Task.html#method-filter}{\code{mlr3::Task$filter()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="format">}\href{../../mlr3/html/Task.html#method-format}{\code{mlr3::Task$format()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="formula">}\href{../../mlr3/html/Task.html#method-formula}{\code{mlr3::Task$formula()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="head">}\href{../../mlr3/html/Task.html#method-head}{\code{mlr3::Task$head()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="help">}\href{../../mlr3/html/Task.html#method-help}{\code{mlr3::Task$help()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="levels">}\href{../../mlr3/html/Task.html#method-levels}{\code{mlr3::Task$levels()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="missings">}\href{../../mlr3/html/Task.html#method-missings}{\code{mlr3::Task$missings()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="rbind">}\href{../../mlr3/html/Task.html#method-rbind}{\code{mlr3::Task$rbind()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="rename">}\href{../../mlr3/html/Task.html#method-rename}{\code{mlr3::Task$rename()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="select">}\href{../../mlr3/html/Task.html#method-select}{\code{mlr3::Task$select()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="set_col_roles">}\href{../../mlr3/html/Task.html#method-set_col_roles}{\code{mlr3::Task$set_col_roles()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="set_levels">}\href{../../mlr3/html/Task.html#method-set_levels}{\code{mlr3::Task$set_levels()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="set_row_roles">}\href{../../mlr3/html/Task.html#method-set_row_roles}{\code{mlr3::Task$set_row_roles()}}\out{</span>}
-\item \out{<span class="pkg-link" data-pkg="mlr3" data-topic="TaskRegr" data-id="truth">}\href{../../mlr3/html/TaskRegr.html#method-truth}{\code{mlr3::TaskRegr$truth()}}\out{</span>}
-}
-\out{</details>}
-}
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="add_strata"><a href='../../mlr3/html/Task.html#method-Task-add_strata'><code>mlr3::Task$add_strata()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="cbind"><a href='../../mlr3/html/Task.html#method-Task-cbind'><code>mlr3::Task$cbind()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="data"><a href='../../mlr3/html/Task.html#method-Task-data'><code>mlr3::Task$data()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="droplevels"><a href='../../mlr3/html/Task.html#method-Task-droplevels'><code>mlr3::Task$droplevels()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="filter"><a href='../../mlr3/html/Task.html#method-Task-filter'><code>mlr3::Task$filter()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="format"><a href='../../mlr3/html/Task.html#method-Task-format'><code>mlr3::Task$format()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="formula"><a href='../../mlr3/html/Task.html#method-Task-formula'><code>mlr3::Task$formula()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="head"><a href='../../mlr3/html/Task.html#method-Task-head'><code>mlr3::Task$head()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="help"><a href='../../mlr3/html/Task.html#method-Task-help'><code>mlr3::Task$help()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="levels"><a href='../../mlr3/html/Task.html#method-Task-levels'><code>mlr3::Task$levels()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="missings"><a href='../../mlr3/html/Task.html#method-Task-missings'><code>mlr3::Task$missings()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="rbind"><a href='../../mlr3/html/Task.html#method-Task-rbind'><code>mlr3::Task$rbind()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="rename"><a href='../../mlr3/html/Task.html#method-Task-rename'><code>mlr3::Task$rename()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="select"><a href='../../mlr3/html/Task.html#method-Task-select'><code>mlr3::Task$select()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="set_col_roles"><a href='../../mlr3/html/Task.html#method-Task-set_col_roles'><code>mlr3::Task$set_col_roles()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="set_levels"><a href='../../mlr3/html/Task.html#method-Task-set_levels'><code>mlr3::Task$set_levels()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="Task" data-id="set_row_roles"><a href='../../mlr3/html/Task.html#method-Task-set_row_roles'><code>mlr3::Task$set_row_roles()</code></a></li>
+<li><span class="pkg-link" data-pkg="mlr3" data-topic="TaskRegr" data-id="truth"><a href='../../mlr3/html/TaskRegr.html#method-TaskRegr-truth'><code>mlr3::TaskRegr$truth()</code></a></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-TaskRegrST-new"></a>}}
+\if{latex}{\out{\hypertarget{method-TaskRegrST-new}{}}}
 \subsection{Method \code{new()}}{
 Create a new spatiotemporal resampling Task
+Returns coordinates of observations.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{TaskRegrST$new(
   id,
   backend,
   target,
-  extra_args = list(coords_as_features = FALSE, crs = NA, coordinate_names = NA)
+  label = NA_character_,
+  coordinate_names,
+  crs = NA_character_,
+  coords_as_features = FALSE,
+  extra_args = list()
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{id}}{\verb{[character(1)]}\cr
-Identifier for the task.}
+\item{\code{id}}{(\code{character(1)})\cr
+Identifier for the new instance.}
 
-\item{\code{backend}}{\link{DataBackend}\cr
+\item{\code{backend}}{(\link{DataBackend})\cr
 Either a \link{DataBackend}, or any object which is convertible to a
-DataBackend with \code{as_data_backend()}. E.g., a \code{data.frame()} will be
-converted to a \link{DataBackendDataTable}.}
+\link{DataBackend} with \code{as_data_backend()}.
+E.g., am \code{sf} will be converted to a \link{DataBackendDataTable}.}
 
-\item{\code{target}}{\verb{[character(1)]}\cr
+\item{\code{target}}{(\code{character(1)})\cr
 Name of the target column.}
 
-\item{\code{extra_args}}{\verb{[named list]}\cr
-Additional task arguments set during construction. Required for
-\code{\link[=convert_task]{convert_task()}}.
-\itemize{
-\item crs \verb{[character(1)]}\cr
-Coordinate reference system. Either a PROJ string or an
-\href{https://epsg.io/}{EPSG} code.
-\item coords_as_features \verb{[logical(1)]}\cr
-Whether the coordinates should also be used as features.
-\item coordinate_names \verb{[character(2)]}\cr
-The variables names of the coordinates in the data.
-}}
+\item{\code{label}}{(\code{character(1)})\cr
+Label for the new instance. Shown in \code{as.data.table(mlr_tasks)}.}
+
+\item{\code{coordinate_names}}{(\code{character(1)})\cr
+The column names of the coordinates in the data.}
+
+\item{\code{crs}}{(\code{character(1)})\cr
+Coordinate reference system.
+WKT2 or EPSG string.}
+
+\item{\code{coords_as_features}}{(\code{logical(1)})\cr
+If \code{TRUE}, coordinates are used as features.}
+
+\item{\code{extra_args}}{(named \code{list()})\cr
+Named list of constructor arguments, required for converting task types
+via \code{\link[=convert_task]{convert_task()}}.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-coordinates"></a>}}
-\if{latex}{\out{\hypertarget{method-coordinates}{}}}
+\if{html}{\out{<a id="method-TaskRegrST-coordinates"></a>}}
+\if{latex}{\out{\hypertarget{method-TaskRegrST-coordinates}{}}}
 \subsection{Method \code{coordinates()}}{
-Return the coordinates of the task
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{TaskRegrST$coordinates(rows = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{TaskRegrST$coordinates(row_ids = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{rows}}{Row IDs. Can be used to subset the returned coordinates.}
+\item{\code{row_ids}}{(\code{integer()})\cr
+Vector of rows indices as subset of \code{task$row_ids}.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+\code{\link[data.table:data.table]{data.table::data.table()}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-print"></a>}}
-\if{latex}{\out{\hypertarget{method-print}{}}}
+\if{html}{\out{<a id="method-TaskRegrST-print"></a>}}
+\if{latex}{\out{\hypertarget{method-TaskRegrST-print}{}}}
 \subsection{Method \code{print()}}{
 Print the task.
 \subsection{Usage}{
@@ -147,8 +164,8 @@ Print the task.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-TaskRegrST-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-TaskRegrST-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

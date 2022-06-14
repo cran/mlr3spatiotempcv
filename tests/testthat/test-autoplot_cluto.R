@@ -1,20 +1,22 @@
 # sptcv_Cluto ------------------------------------------------------------------
 
+# nocov start
+
 test_that("plot() works for 'sptcv_cluto'", {
+  skip_if_not_installed("skmeans")
   skip_if_not_installed("vdiffr")
   skip_on_cran()
   skip_on_os("mac")
   set.seed(42)
 
-  task = tsk("cookfarm")
-  rsp = rsmp("sptcv_cluto", folds = 4, time_var = "Date")
-  rsp$instantiate(task)
+  rsp = rsmp("sptcv_cluto", folds = 4)
+  rsp$instantiate(task_cluto)
 
   # autoplot() is used instead of plot() to prevent side-effect plotting
-  p1 = autoplot(rsp, task)
-  p2 = autoplot(rsp, task, 1)
-  p3 = autoplot(rsp, task, c(1, 2))
-  p4 = autoplot(rsp, task, c(1, 2), plot_as_grid = FALSE)
+  p1 = autoplot(rsp, task_cluto)
+  p2 = autoplot(rsp, task_cluto, 1)
+  p3 = autoplot(rsp, task_cluto, c(1, 2))
+  p4 = autoplot(rsp, task_cluto, c(1, 2), plot_as_grid = FALSE)
 
   expect_s3_class(p1, "plotly")
   expect_s3_class(p2, "plotly")
@@ -26,27 +28,27 @@ test_that("plot() works for 'sptcv_cluto'", {
 })
 
 test_that("plot() works for 'repeated_sptcv_cluto'", {
+  skip_if_not_installed("skmeans")
   skip_if_not_installed("vdiffr")
   skip_on_cran()
   skip_on_os("mac")
 
   set.seed(42)
 
-  task = tsk("cookfarm")
-  rsp = rsmp("repeated_sptcv_cluto", folds = 4, time_var = "Date")
-  rsp$instantiate(task)
+  rsp = rsmp("repeated_sptcv_cluto", folds = 4)
+  rsp$instantiate(task_cluto)
 
   # autoplot() is used instead of plot() to prevent side-effect plotting
-  p1 = autoplot(rsp, task)
-  p2 = autoplot(rsp, task, 1)
-  p3 = autoplot(rsp, task, c(1, 2))
+  p1 = autoplot(rsp, task_cluto)
+  p2 = autoplot(rsp, task_cluto, 1)
+  p3 = autoplot(rsp, task_cluto, c(1, 2))
 
   expect_s3_class(p1, "plotly")
   expect_s3_class(p2, "plotly")
   expect_list(p3)
 
-  p4 = autoplot(rsp, task, repeats_id = 2)
-  p5 = autoplot(rsp, task, fold_id = 1, repeats_id = 2)
+  p4 = autoplot(rsp, task_cluto, repeats_id = 2)
+  p5 = autoplot(rsp, task_cluto, fold_id = 1, repeats_id = 2)
 
   expect_s3_class(p4, "plotly")
   expect_s3_class(p5, "plotly")
@@ -57,3 +59,5 @@ test_that("plot() works for 'repeated_sptcv_cluto'", {
   vdiffr::expect_doppelganger("RepSptCVCluto - Fold 1-2, Rep 2", p4)
   vdiffr::expect_doppelganger("RepSptCVCluto - Fold 1, Rep 2", p5)
 })
+
+# nocov end

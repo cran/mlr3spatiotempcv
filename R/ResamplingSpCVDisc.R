@@ -1,6 +1,7 @@
 #' @title (sperrorest) Spatial "disc" resampling
 #'
 #' @template rox_spcv_disc
+#' @name mlr_resamplings_spcv_disc
 #'
 #' @references
 #' `r format_bib("brenning2012")`
@@ -49,7 +50,9 @@ ResamplingSpCVDisc = R6Class("ResamplingSpCVDisc",
       ps$values = list(folds = 10L)
       super$initialize(
         id = id,
-        param_set = ps
+        param_set = ps,
+        label = "Repeated Spatial 'disc' resampling",
+        man = "mlr3spatiotempcv::mlr_resamplings_spcv_disc"
       )
     },
 
@@ -60,7 +63,7 @@ ResamplingSpCVDisc = R6Class("ResamplingSpCVDisc",
     instantiate = function(task) {
 
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       groups = task$groups
 
       # Set values to default if missing
@@ -103,6 +106,7 @@ ResamplingSpCVDisc = R6Class("ResamplingSpCVDisc",
       # respective folds
       mlr3_index = 1
 
+      ### start: this part is mainly copied from sperrorest::partition_disc()
       for (i in index) {
         if (!is.null(self$param_set$values$buffer) |
           self$param_set$values$radius >= 0) {
@@ -130,6 +134,7 @@ ResamplingSpCVDisc = R6Class("ResamplingSpCVDisc",
             wrap = TRUE
           )
         }
+        ### end: this part is mainly copied from sperrorest::partition_disc()
 
         # similar result structure as in sptcv_cstf
         self$instance$test[[mlr3_index]] = test_sel

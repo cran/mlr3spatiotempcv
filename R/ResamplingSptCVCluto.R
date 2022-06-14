@@ -1,6 +1,7 @@
-#' @title (skmeans) Spatiotemporal clustering resampling
+#' @title (skmeans) Spatiotemporal clustering resampling via CLUTO
 #'
 #' @template rox_sptcv_cluto
+#' @name mlr_resamplings_sptcv_cluto
 #'
 #' @references
 #' `r format_bib("zhao2002")`
@@ -11,10 +12,11 @@
 #' if (mlr3misc::require_namespaces("skmeans", quietly = TRUE)) {
 #'   library(mlr3)
 #'   library(mlr3spatiotempcv)
-#'   task = tsk("cookfarm")
+#'   task = tsk("cookfarm_mlr3")
+#'   task$set_col_roles("Date", "time")
 #'
 #'   # Instantiate Resampling
-#'   rcv = rsmp("sptcv_cluto", folds = 5, time_var = "Date")
+#'   rcv = rsmp("sptcv_cluto", folds = 5)
 #'   rcv$instantiate(task)
 #'
 #'   # Individual sets:
@@ -30,11 +32,6 @@
 ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
   inherit = mlr3::Resampling,
   public = list(
-
-    #' @field time_var [character]\cr
-    #'  The name of the variable which represents the time dimension.
-    #'  Must be of type numeric.
-    time_var = NULL,
 
     #' @field clmethod [character]\cr
     #'   Name of the clustering method to use within `vcluster`.
@@ -70,7 +67,6 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
     #' @param verbose [logical]\cr
     #'   Whether to show `vcluster` progress and summary output.
     initialize = function(id = "sptcv_cluto",
-      time_var = NULL,
       clmethod = "direct",
       cluto_parameters = NULL,
       verbose = TRUE) {
@@ -80,7 +76,6 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
       ))
       ps$values = list(folds = 10L)
 
-      self$time_var = time_var
       self$clmethod = clmethod
       self$cluto_parameters = cluto_parameters
       self$verbose = verbose
@@ -88,6 +83,7 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Spatiotemporal clustering resampling via CLUTO",
         man = "mlr3spatiotempcv::mlr_resamplings_sptcv_cluto"
       )
     },
@@ -99,19 +95,17 @@ ResamplingSptCVCluto = R6Class("ResamplingSptCVCluto",
     instantiate = function(task) {
 
       mlr3misc::require_namespaces("skmeans", quietly = TRUE)
-
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
-      checkmate::assert_subset(self$time_var, choices = task$feature_names)
+      assert_spatial_task(task)
       groups = task$groups
 
       if (!is.null(groups)) {
         stopf("Grouping is not supported for spatial resampling methods") # nocov # nolint
       }
 
-      if (!is.null(self$time_var)) {
+      if (!is.null(task$col_roles$time)) {
 
-        time = as.POSIXct(task$data()[[self$time_var]])
+        time = as.POSIXct(task$data(cols = task$col_roles$time)[[task$col_roles$time]])
         # time in seconds since 1/1/1970
         time_num = as.numeric(time)
 

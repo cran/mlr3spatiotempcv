@@ -1,4 +1,6 @@
 test_that("resampling iterations equals folds", {
+  skip_if_not_installed("blockCV")
+
   task = test_make_twoclass_task()
   rsp = rsmp("spcv_block", folds = 2, range = 2L)
   rsp$instantiate(task)
@@ -7,6 +9,8 @@ test_that("resampling iterations equals folds", {
 })
 
 test_that("error when number of desired folds is larger than number possible blocks", {
+  skip_if_not_installed("blockCV")
+
   task = test_make_twoclass_task()
   rsp = rsmp("spcv_block", folds = 10, range = 4L)
 
@@ -14,6 +18,8 @@ test_that("error when number of desired folds is larger than number possible blo
 })
 
 test_that("error when neither cols & rows | range is specified", {
+  skip_if_not_installed("blockCV")
+
   task = test_make_twoclass_task()
   rsp = rsmp("spcv_block")
 
@@ -23,6 +29,8 @@ test_that("error when neither cols & rows | range is specified", {
 })
 
 test_that("error when only one of rows or cols is set", {
+  skip_if_not_installed("blockCV")
+
   task = test_make_twoclass_task()
   rsp = rsmp("spcv_block", rows = 4)
 
@@ -33,11 +41,14 @@ test_that("error when only one of rows or cols is set", {
 })
 
 test_that("Error when length(range) >= 2", {
+  skip_if_not_installed("blockCV")
+
   expect_error(rsmp("spcv_block", range = c(500L, 1000L)))
 })
 
 
 test_that("mlr3spatiotempcv indices are the same as blockCV indices: selection = checkerboard", {
+  skip_if_not_installed("blockCV")
 
   # see https://github.com/mlr-org/mlr3spatiotempcv/issues/92
 
@@ -62,6 +73,8 @@ test_that("mlr3spatiotempcv indices are the same as blockCV indices: selection =
 })
 
 test_that("mlr3spatiotempcv indices are the same as blockCV indices: cols and rows", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("blockCV")
   task = test_make_blockCV_test_task()
 
   sf::sf_use_s2(use_s2 = FALSE)
@@ -91,6 +104,8 @@ test_that("mlr3spatiotempcv indices are the same as blockCV indices: cols and ro
 })
 
 test_that("mlr3spatiotempcv indices are the same as blockCV indices: rasterLayer", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("terra")
 
   # cran test failure (Error: no arguments in initialization list)
   testthat::skip_on_os("solaris")
@@ -129,6 +144,7 @@ test_that("mlr3spatiotempcv indices are the same as blockCV indices: rasterLayer
 })
 
 test_that("Error when selection = checkboard and folds > 2", {
+  skip_if_not_installed("sf")
   task = test_make_blockCV_test_task()
   expect_error(rsmp("spcv_block", range = 10000L,
     selection = "checkerboard", folds = 5)$instantiate(task))

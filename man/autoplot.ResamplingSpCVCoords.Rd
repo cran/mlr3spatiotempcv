@@ -14,6 +14,7 @@
   plot_as_grid = TRUE,
   train_color = "#0072B5",
   test_color = "#E18727",
+  sample_fold_n = NULL,
   ...
 )
 
@@ -25,6 +26,7 @@
   plot_as_grid = TRUE,
   train_color = "#0072B5",
   test_color = "#E18727",
+  sample_fold_n = NULL,
   ...
 )
 
@@ -53,6 +55,11 @@ The color to use for the training set observations.}
 
 \item{test_color}{\verb{[character(1)]}\cr
 The color to use for the test set observations.}
+
+\item{sample_fold_n}{\verb{[integer]}\cr
+Number of points in a random sample stratified over partitions.
+This argument aims to keep file sizes of resulting plots reasonable and
+reduce overplotting in dense datasets.}
 
 \item{...}{Passed to \code{geom_sf()}. Helpful for adjusting point sizes and
 shapes.}
@@ -84,7 +91,7 @@ if (mlr3misc::require_namespaces(c("sf"), quietly = TRUE)) {
 }
 \seealso{
 \itemize{
-\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/special-tasks.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
+\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/08-special-spatiotemp.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
 \item \code{\link[=autoplot.ResamplingSpCVBlock]{autoplot.ResamplingSpCVBlock()}}
 \item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}
 \item \code{\link[=autoplot.ResamplingSpCVEnv]{autoplot.ResamplingSpCVEnv()}}

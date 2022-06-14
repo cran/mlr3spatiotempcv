@@ -1,5 +1,38 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# mlr3spatiotempcv 2.0.0
+
+## Breaking
+
+- Rename task `cookfarm` to `cookfarm_mlr3`.
+  This was done to distinguish the `cookfarm` task implementation in {mlr3} better from the original `cookfarm` dataset.
+  `cookfarm_mlr3` also now comes with all rows of the upstream `cookfarm` task and not with a random subset as before.
+- Rewrite `mlr_resampling_spctcv_cstf` implementation.
+  **The method will produce different fold results compared to {mlr3spatiotempcv} <= 1.0.1**.
+  This is because of a change/fix in the sampling behavior: before, an (unwanted) stratified sampling was done on `time` and `space` variables.
+  While this matched the upstream implementation in {CAST}, this did not match with the actual theoretical underpinning described in the literature.
+
+## Features
+
+- Add support for `DataBackendRaster` (@be-marc, #191).
+- `mlr_resampling_spctcv_cstf`: a log message returns the column roles from the Task which are used for partitioning
+- The help pages for all methods now describe the methods manually rather than importing the upstream documentation of the respective method.
+- `Task*ST` classes now print column roles `space` and `time` (if set) (#198)
+- `autoplot()` gains `plot_time_var` argument for 3D visualizations of `mlr_resamplings_sptcv_cstf` resamplings with only 'space' used for partitioning (#197)
+- Vignette updates
+
+## Bugfixes
+
+- All {mlr3spatiotempcv} methods now comply with the {mlr3} man file declaration logic.
+
+## Misc
+
+- Escape all examples and tests for non-installed packages.
+- The `cookfarm_mlr3` task now sets column roles "space" and "time" for variables `SOURCEID` and `Date`, respectively.
+- Harden CLUTO tests (#182)
+- Large update for the "spatiotemporal" section in the [mlr3book](https://mlr3book.mlr-org.com/)
+
+
 # mlr3spatiotempcv 1.0.1
 
 - Fixed a issue which caused coordinates to appear in the feature set when a data.frame was supplied (#166, @be-marc)
@@ -10,8 +43,8 @@
 
 ## Breaking
 
-- `autoplot()`: removed argument `crs`. 
-  The CRS is now inferred from the supplied Task. 
+- `autoplot()`: removed argument `crs`.
+  The CRS is now inferred from the supplied Task.
   Setting a different CRS than the task might lead to spurious issues and the initial idea of changing the CRS for plotting to have proper axes labeling does not apply (anymore) (#144)
 
 ## Features

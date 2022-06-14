@@ -14,6 +14,7 @@
   plot_as_grid = TRUE,
   train_color = "#0072B5",
   test_color = "#E18727",
+  repeats_id = NULL,
   tickformat_date = "\%Y-\%m",
   nticks_x = 3,
   nticks_y = 3,
@@ -22,6 +23,8 @@
   static_image = FALSE,
   show_omitted = FALSE,
   plot3D = NULL,
+  plot_time_var = NULL,
+  sample_fold_n = NULL,
   ...
 )
 
@@ -39,6 +42,7 @@
   point_size = 3,
   axis_label_fontsize = 11,
   plot3D = NULL,
+  plot_time_var = NULL,
   ...
 )
 
@@ -67,6 +71,9 @@ The color to use for the training set observations.}
 
 \item{test_color}{\verb{[character(1)]}\cr
 The color to use for the test set observations.}
+
+\item{repeats_id}{\verb{[numeric]}\cr
+Repetition ID to plot.}
 
 \item{tickformat_date}{\verb{[character]}\cr
 Date format for z-axis.}
@@ -98,11 +105,18 @@ Whether to show points not used in train or test set for the current fold.}
 Whether to create a 2D image via \pkg{ggplot2} or a 3D plot via
 \pkg{plotly}.}
 
+\item{plot_time_var}{\verb{[character]}\cr
+The variable to use for the z-axis (time).
+Remove the column role \code{feature} for this variable to only use
+it for plotting.}
+
+\item{sample_fold_n}{\verb{[integer]}\cr
+Number of points in a random sample stratified over partitions.
+This argument aims to keep file sizes of resulting plots reasonable and
+reduce overplotting in dense datasets.}
+
 \item{...}{Passed down to \code{plotly::orca()}. Only effective when
 \code{static_image = TRUE}.}
-
-\item{repeats_id}{\verb{[numeric]}\cr
-Repetition ID to plot.}
 
 \item{x}{\verb{[Resampling]}\cr
 mlr3 spatial resampling object of class \link{ResamplingSptCVCstf} or
@@ -113,12 +127,13 @@ Generic S3 \code{plot()} and \code{autoplot()} (ggplot2) methods to
 visualize mlr3 spatiotemporal resampling objects.
 }
 \details{
-This method requires to set argument \code{fold_id} and no plot containing all
-partitions can be created. This is because the method does not make use of
-all observations but only a subset of them (many observations are left out).
+This method requires to set argument \code{fold_id}.
+No plot showing all folds in one plot can be created.
+This is because the LLTO method does not make use of all observations but only
+a subset of them (many observations are omitted).
 Hence, train and test sets of one fold are not re-used in other folds as in
-other methods and plotting these without a train/test indicator would not
-make sense.
+other methods and plotting these without a train/test indicator would be
+misleading.
 }
 \section{2D vs 3D plotting}{
 
@@ -137,21 +152,21 @@ mode.
 if (mlr3misc::require_namespaces(c("sf", "plotly"), quietly = TRUE)) {
   library(mlr3)
   library(mlr3spatiotempcv)
-  task_st = tsk("cookfarm")
-  resampling = rsmp("sptcv_cstf",
-    folds = 5, time_var = "Date",
-    space_var = "SOURCEID")
+  task_st = tsk("cookfarm_mlr3")
+  task_st$set_col_roles("SOURCEID", "space")
+  task_st$set_col_roles("Date", "time")
+  resampling = rsmp("sptcv_cstf", folds = 5)
   resampling$instantiate(task_st)
 
-  # with both `space_var` and `time_var` (LLTO), the omitted observations per
-  # fold can be shown by setting `show_omitted = TRUE`
+  # with both `"space"` and `"time"` column roles set (LLTO), the omitted
+  # observations per fold can be shown by setting `show_omitted = TRUE`
   autoplot(resampling, task_st, fold_id = 1, show_omitted = TRUE)
 }
 }
 }
 \seealso{
 \itemize{
-\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/special-tasks.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
+\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/08-special-spatiotemp.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
 \item Vignette \href{https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz.html}{Spatiotemporal Visualization}.
 \item \code{\link[=autoplot.ResamplingSpCVBlock]{autoplot.ResamplingSpCVBlock()}}
 \item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}

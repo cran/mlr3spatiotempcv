@@ -1,6 +1,7 @@
 #' @title (blockCV) "Environmental blocking" resampling
 #'
 #' @template rox_spcv_env
+#' @name mlr_resamplings_spcv_env
 #'
 #' @references
 #' `r format_bib("valavi2018")`
@@ -43,6 +44,7 @@ ResamplingSpCVEnv = R6Class("ResamplingSpCVEnv",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Spatial 'environmental blocking' resampling",
         man = "mlr3spatiotempcv::mlr_resamplings_spcv_env"
       )
     },
@@ -53,8 +55,10 @@ ResamplingSpCVEnv = R6Class("ResamplingSpCVEnv",
     #'  A task to instantiate.
     instantiate = function(task) {
 
+      mlr3misc::require_namespaces(c("blockCV", "sf"))
+
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       pv = self$param_set$values
 
       # Set values to default if missing

@@ -1,14 +1,14 @@
 #' @rawNamespace import(data.table, except = transpose)
 #' @importFrom R6 R6Class
-#' @importFrom mlr3 TaskClassif TaskRegr Resampling as_data_backend assert_task rsmp tsk rsmps lrn msr mlr_resamplings
 #' @import mlr3misc
 #' @import checkmate
 #' @import paradox
+#' @import mlr3
 #' @import ggplot2
 #' @importFrom utils globalVariables
 #' @section Main resources:
 #' * Book on mlr3: \url{https://mlr3book.mlr-org.com}
-#' * mlr3book section about spatiotemporal data: \url{https://mlr3book.mlr-org.com/special-tasks.html#spatiotemporal}
+#' * mlr3book section about spatiotemporal data: \url{https://mlr3book.mlr-org.com/08-special-spatiotemp.html}
 #' * package vignettes: \url{https://mlr3spatiotempcv.mlr-org.com/dev/articles/}
 #'
 #' ## Miscellaneous \pkg{mlr3} content
@@ -39,8 +39,9 @@
 "_PACKAGE"
 
 utils::globalVariables(c(
-  "row_id", "cookfarm_sample", "ecuador", "diplodia",
-  "resampling", "task", "indicator", "fold", "id", "type"))
+  "row_id", "cookfarm_mlr3", "ecuador", "diplodia",
+  "resampling", "task", "indicator", "fold", "id", "type",
+  "fold_space", "fold_time", "test", "N"))
 
 register_mlr3 = function() { # nocov start
   # reflections ----------------------------------------------------------------
@@ -57,8 +58,18 @@ register_mlr3 = function() { # nocov start
   )), "type")
 
   # append "coordinates" to col_roles
-  x$task_col_roles$classif_st = append(x$task_col_roles$classif, "coordinates")
-  x$task_col_roles$regr_st = append(x$task_col_roles$regr, "coordinates")
+  # x$task_col_roles$classif_st = append(x$task_col_roles$classif, "coordinates")
+  # x$task_col_roles$regr_st = append(x$task_col_roles$regr, "coordinates")
+
+  # append "space" and "time" to col_roles
+  # used in CAST
+  # prevent redundant addition when calling `pkgload::load_all()`
+  if (!any(c("space", "time", "plot_time", "coordinate") %in% x$task_col_roles$classif)) {
+    x$task_col_roles$classif = append(x$task_col_roles$classif, c("coordinate", "space", "time"))
+    x$task_col_roles$classif_st = append(x$task_col_roles$classif_st, c("coordinate", "space", "time"))
+    x$task_col_roles$regr = append(x$task_col_roles$regr, c("coordinate", "space", "time"))
+    x$task_col_roles$regr_st = append(x$task_col_roles$regr_st, c("coordinate", "space", "time"))
+  }
 
   # tasks --------------------------------------------------------------------
 
@@ -66,33 +77,34 @@ register_mlr3 = function() { # nocov start
 
   mlr_tasks$add("ecuador", load_task_ecuador)
   mlr_tasks$add("diplodia", load_task_diplodia)
-  mlr_tasks$add("cookfarm", load_task_cookfarm)
+  mlr_tasks$add("cookfarm_mlr3", load_task_cookfarm)
 
   # resampling methods ---------------------------------------------------------
 
   mlr_resamplings = utils::getFromNamespace("mlr_resamplings", ns = "mlr3")
   mlr_resamplings$add("spcv_block", ResamplingSpCVBlock)
   mlr_resamplings$add("spcv_buffer", ResamplingSpCVBuffer)
-  mlr_resamplings$add("spcv_disc", ResamplingSpCVDisc)
-  mlr_resamplings$add("spcv_tiles", ResamplingSpCVTiles)
-  mlr_resamplings$add("sptcv_cstf", ResamplingSptCVCstf)
-  mlr_resamplings$add("sptcv_cluto", ResamplingSptCVCluto)
-  mlr_resamplings$add("spcv_coords", ResamplingSpCVCoords)
   mlr_resamplings$add("spcv_env", ResamplingSpCVEnv)
-
-  mlr_resamplings$add("repeated_spcv_coords", ResamplingRepeatedSpCVCoords)
   mlr_resamplings$add("repeated_spcv_env", ResamplingRepeatedSpCVEnv)
   mlr_resamplings$add("repeated_spcv_block", ResamplingRepeatedSpCVBlock)
+  mlr_resamplings$add("spcv_disc", ResamplingSpCVDisc)
+  mlr_resamplings$add("spcv_tiles", ResamplingSpCVTiles)
+  mlr_resamplings$add("spcv_coords", ResamplingSpCVCoords)
+  mlr_resamplings$add("repeated_spcv_coords", ResamplingRepeatedSpCVCoords)
   mlr_resamplings$add("repeated_spcv_disc", ResamplingRepeatedSpCVDisc)
   mlr_resamplings$add("repeated_spcv_tiles", ResamplingRepeatedSpCVTiles)
+  mlr_resamplings$add("sptcv_cluto", ResamplingSptCVCluto)
   mlr_resamplings$add("repeated_sptcv_cluto", ResamplingRepeatedSptCVCluto)
+  mlr_resamplings$add("sptcv_cstf", ResamplingSptCVCstf)
   mlr_resamplings$add("repeated_sptcv_cstf", ResamplingRepeatedSptCVCstf)
 }
 
 .onLoad = function(libname, pkgname) { # nolint
   register_mlr3()
-  setHook(packageEvent("mlr3", "onLoad"), function(...) register_mlr3(),
-    action = "append")
+  assign("lg", lgr::get_logger("mlr3"), envir = parent.env(environment()))
+  if (Sys.getenv("IN_PKGDOWN") == "true") {
+    lg$set_threshold("warn")
+  }
 }
 
 .onUnload = function(libpath) { # nolint

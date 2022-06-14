@@ -1,6 +1,7 @@
 #' @title (sperrorest) Coordinate-based k-means clustering
 #'
 #' @template rox_spcv_coords
+#' @name mlr_resamplings_spcv_coords
 #'
 #' @references
 #' `r format_bib("brenning2012")`
@@ -40,6 +41,7 @@ ResamplingSpCVCoords = R6Class("ResamplingSpCVCoords",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Coordinate-based k-means clustering resampling",
         man = "mlr3spatiotempcv::mlr_resamplings_spcv_coords"
       )
     },
@@ -51,9 +53,8 @@ ResamplingSpCVCoords = R6Class("ResamplingSpCVCoords",
     instantiate = function(task) {
 
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       groups = task$groups
-
 
       if (!is.null(groups)) {
         stopf("Grouping is not supported for spatial resampling methods")

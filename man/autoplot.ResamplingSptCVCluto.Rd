@@ -19,6 +19,7 @@
   nticks_y = 3,
   point_size = 3,
   axis_label_fontsize = 11,
+  sample_fold_n = NULL,
   ...
 )
 
@@ -30,6 +31,7 @@
   plot_as_grid = TRUE,
   train_color = "#0072B5",
   test_color = "#E18727",
+  sample_fold_n = NULL,
   ...
 )
 
@@ -74,6 +76,11 @@ Point size of markers.}
 \item{axis_label_fontsize}{\verb{[integer]}\cr
 Font size of axis labels.}
 
+\item{sample_fold_n}{\verb{[integer]}\cr
+Number of points in a random sample stratified over partitions.
+This argument aims to keep file sizes of resulting plots reasonable and
+reduce overplotting in dense datasets.}
+
 \item{...}{Passed to \code{geom_sf()}. Helpful for adjusting point sizes and
 shapes.}
 
@@ -93,8 +100,8 @@ visualize mlr3 spatiotemporal resampling objects.
 if (mlr3misc::require_namespaces(c("sf", "skmeans", "plotly"), quietly = TRUE)) {
   library(mlr3)
   library(mlr3spatiotempcv)
-  task_st = tsk("cookfarm")
-  resampling = rsmp("sptcv_cluto", folds = 5, time_var = "Date")
+  task_st = tsk("cookfarm_mlr3")
+  resampling = rsmp("sptcv_cluto", folds = 5)
   resampling$instantiate(task_st)
 
   # plot
@@ -106,7 +113,7 @@ if (mlr3misc::require_namespaces(c("sf", "skmeans", "plotly"), quietly = TRUE)) 
 }
 \seealso{
 \itemize{
-\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/special-tasks.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
+\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/08-special-spatiotemp.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
 \item Vignette \href{https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz.html}{Spatiotemporal Visualization}.
 \item \code{\link[=autoplot.ResamplingSpCVBlock]{autoplot.ResamplingSpCVBlock()}}
 \item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}

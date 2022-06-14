@@ -1,6 +1,7 @@
 #' @title (blockCV) Spatial block resampling
 #'
 #' @template rox_spcv_block
+#' @name mlr_resamplings_spcv_block
 #'
 #' @references
 #' `r format_bib("valavi2018")`
@@ -63,9 +64,9 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Spatial block resampling",
         man = "mlr3spatiotempcv::mlr_resamplings_spcv_block"
       )
-      mlr3misc::require_namespaces(c("blockCV", "sf"))
     },
 
     #' @description
@@ -73,9 +74,10 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
     #' @param task [Task]\cr
     #'  A task to instantiate.
     instantiate = function(task) {
+      mlr3misc::require_namespaces(c("blockCV", "sf"))
 
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       pv = self$param_set$values
 
       if (!is.null(pv$range)) {
@@ -126,7 +128,7 @@ ResamplingSpCVBlock = R6Class("ResamplingSpCVBlock",
       instance = private$.sample(
         task$row_ids,
         task$coordinates(),
-        task$extra_args$crs
+        task$crs
       )
 
       self$instance = instance

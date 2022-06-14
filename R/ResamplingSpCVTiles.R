@@ -1,6 +1,7 @@
 #' @title (sperrorest) Spatial "Tiles" resampling
 #'
 #' @template rox_spcv_tiles
+#' @name mlr_resamplings_spcv_tiles
 #'
 #' @references
 #' `r format_bib("brenning2012")`
@@ -48,7 +49,9 @@ ResamplingSpCVTiles = R6Class("ResamplingSpCVTiles",
       ))
       super$initialize(
         id = id,
-        param_set = ps
+        param_set = ps,
+        label = "Spatial 'tiles' resampling",
+        man = "mlr3spatiotempcv::mlr_resamplings_spcv_tiles"
       )
     },
 
@@ -59,7 +62,7 @@ ResamplingSpCVTiles = R6Class("ResamplingSpCVTiles",
     instantiate = function(task) {
 
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       groups = task$groups
 
       pv = self$param_set$values
@@ -108,6 +111,8 @@ ResamplingSpCVTiles = R6Class("ResamplingSpCVTiles",
       if (is.null(pv$repeats)) {
         pv$repeats = 1
       }
+
+      ### start: this part is mainly copied from sperrorest::partition_tiles()
 
       if (pv$rotation == "none") {
         phi = rep(0, length(seq_len(pv$repeats)))
@@ -277,6 +282,8 @@ ResamplingSpCVTiles = R6Class("ResamplingSpCVTiles",
         }
       }
       tile = sperrorest::as.resampling(tile)
+
+      ### end: this part is mainly copied from sperrorest::partition_tiles()
 
       class(tile) == "list"
       train_inds = lapply(tile, function(x) x$train)

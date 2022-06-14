@@ -4,12 +4,13 @@
 #'   visualize mlr3 spatiotemporal resampling objects.
 #'
 #' @details
-#' This method requires to set argument `fold_id` and no plot containing all
-#' partitions can be created. This is because the method does not make use of
-#' all observations but only a subset of them (many observations are left out).
+#' This method requires to set argument `fold_id`.
+#' No plot showing all folds in one plot can be created.
+#' This is because the LLTO method does not make use of all observations but only
+#' a subset of them (many observations are omitted).
 #' Hence, train and test sets of one fold are not re-used in other folds as in
-#' other methods and plotting these without a train/test indicator would not
-#' make sense.
+#' other methods and plotting these without a train/test indicator would be
+#' misleading.
 #'
 #' @section 2D vs 3D plotting:
 #' This method has both a 2D and a 3D plotting method.
@@ -52,11 +53,15 @@
 #' @param plot3D `[logical]`\cr
 #'   Whether to create a 2D image via \pkg{ggplot2} or a 3D plot via
 #'   \pkg{plotly}.
+#' @param plot_time_var `[character]`\cr
+#'   The variable to use for the z-axis (time).
+#'   Remove the column role `feature` for this variable to only use
+#'   it for plotting.
 #' @param ... Passed down to `plotly::orca()`. Only effective when
 #' `static_image = TRUE`.
 #' @export
 #' @seealso
-#'   - mlr3book chapter on ["Spatiotemporal Visualization"](https://mlr3book.mlr-org.com/special-tasks.html#vis-spt-partitions)
+#'   - mlr3book chapter on ["Spatiotemporal Visualization"](https://mlr3book.mlr-org.com/08-special-spatiotemp.html#vis-spt-partitions)
 #'   - Vignette [Spatiotemporal Visualization](https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz.html).
 #'   - [autoplot.ResamplingSpCVBlock()]
 #'   - [autoplot.ResamplingSpCVBuffer()]
@@ -69,14 +74,14 @@
 #' if (mlr3misc::require_namespaces(c("sf", "plotly"), quietly = TRUE)) {
 #'   library(mlr3)
 #'   library(mlr3spatiotempcv)
-#'   task_st = tsk("cookfarm")
-#'   resampling = rsmp("sptcv_cstf",
-#'     folds = 5, time_var = "Date",
-#'     space_var = "SOURCEID")
+#'   task_st = tsk("cookfarm_mlr3")
+#'   task_st$set_col_roles("SOURCEID", "space")
+#'   task_st$set_col_roles("Date", "time")
+#'   resampling = rsmp("sptcv_cstf", folds = 5)
 #'   resampling$instantiate(task_st)
 #'
-#'   # with both `space_var` and `time_var` (LLTO), the omitted observations per
-#'   # fold can be shown by setting `show_omitted = TRUE`
+#'   # with both `"space"` and `"time"` column roles set (LLTO), the omitted
+#'   # observations per fold can be shown by setting `show_omitted = TRUE`
 #'   autoplot(resampling, task_st, fold_id = 1, show_omitted = TRUE)
 #' }
 #' }
@@ -87,6 +92,7 @@ autoplot.ResamplingSptCVCstf = function( # nolint
   plot_as_grid = TRUE,
   train_color = "#0072B5",
   test_color = "#E18727",
+  repeats_id = NULL,
   tickformat_date = "%Y-%m",
   nticks_x = 3,
   nticks_y = 3,
@@ -95,6 +101,8 @@ autoplot.ResamplingSptCVCstf = function( # nolint
   static_image = FALSE,
   show_omitted = FALSE,
   plot3D = NULL,
+  plot_time_var = NULL,
+  sample_fold_n = NULL,
   ...) {
 
   dots = list(...)
@@ -114,14 +122,14 @@ autoplot.ResamplingSptCVCstf = function( # nolint
 
   resampling_sub = resampling$clone()
 
-  if (grepl("Repeated", class(resampling)[1])) {
+  if (any(grepl("ResamplingRepeated", class(resampling)))) {
     resampling_sub$instance = resampling_sub$instance[[repeats_id]]
   }
 
   # check if we are in a 2D or 3D scenario
   if (is.null(plot3D)) {
-    if (!is.null(resampling_sub$space_var) &&
-      !is.null(resampling_sub$time_var)) {
+    if (length(task$col_roles$space) &&
+      length(task$col_roles$time)) {
       plot3D = TRUE
     } else {
       plot3D = FALSE
@@ -132,23 +140,17 @@ autoplot.ResamplingSptCVCstf = function( # nolint
 
   if (!plot3D) {
 
-    # bring into correct format (complicated alternative to reshape::melt)
-    resampling_sub$instance = data.table::rbindlist(
-      lapply(resampling_sub$instance$test, as.data.table),
-      idcol = "fold")
-    setnames(resampling_sub$instance, c("fold", "row_id"))
-
-    plot = autoplot_spatial(
-      resampling = resampling_sub,
-      task = task,
-      fold_id = fold_id,
-      plot_as_grid = plot_as_grid,
-      train_color = train_color,
-      test_color = test_color,
-      show_blocks = FALSE,
-      show_labels = FALSE,
-      ...)
-    return(invisible(plot))
+    if (!is.null(fold_id)) {
+      ### Multiplot of single folds with train and test ----------------------
+      plot = autoplot_multi_fold_list(task, resampling_sub, sample_fold_n,
+        fold_id, repeats_id, plot_as_grid, show_omitted)
+      # }
+    } else {
+      ### One plot showing all test folds --------------------------------------
+      plot = autoplot_all_folds_list(task, resampling_sub, sample_fold_n,
+        fold_id, repeats_id)
+    }
+    return(plot)
   }
 
   # 3D -------------------------------------------------------------------------
@@ -160,19 +162,33 @@ autoplot.ResamplingSptCVCstf = function( # nolint
       if (length(fold_id) == 1) {
         ### only one fold
 
-        data_coords = prepare_autoplot_cstf(task, resampling_sub)
+        data_coords = format_resampling_list(task, resampling_sub)
 
-        # suppress undefined global variables note
-        data_coords$indicator = ""
+        if (length(task$col_roles$time)) {
+          data_coords$Date = as.Date(task$data(cols = task$col_roles$time)[[1]])
+        } else {
+          # if time col is not set, check for plot_time col role
+          if (!is.null(plot_time_var)) {
+            data_coords$Date = as.Date(task$data(cols = plot_time_var)[[1]])
+          } else {
+            lg$error("Neither 'time' or 'plot' column roles are set. At least one is required for 3D plotting. If the variable is only used for plotting purposes, please define argument 'plot_time_var' in `autoplot()` and remove the column role 'feature' for this variable.")
+            stop()
+          }
+        }
 
         row_id_test = resampling_sub$instance$test[[fold_id]]
         row_id_train = resampling_sub$instance$train[[fold_id]]
 
-        data_coords[row_id %in% row_id_test, indicator := "Test"]
-        data_coords[row_id %in% row_id_train, indicator := "Train"]
+        data_coords[list(row_id_train), "indicator" := "Train", on = "row_id"]
+        data_coords[list(row_id_test), "indicator" := "Test", on = "row_id"]
+
+        # take stratified random sample from folds
+        if (!is.null(sample_fold_n)) {
+          data_coords = strat_sample_folds(data_coords, "test", sample_fold_n)
+        }
 
         if (show_omitted && nrow(data_coords[indicator == ""]) > 0) {
-          data_coords[indicator == "", indicator := "Omitted"]
+          data_coords[is.na(get("indicator")), "indicator" := "Omitted"]
 
           plot_single_plotly = plotly::plot_ly(data_coords,
             x = ~x, y = ~y, z = ~Date,
@@ -182,7 +198,8 @@ autoplot.ResamplingSptCVCstf = function( # nolint
             sizes = c(20, 100)
           )
         } else {
-          data_coords = data_coords[indicator != ""]
+          data_coords = data_coords[!is.na(get("indicator")), , ]
+
           plot_single_plotly = plotly::plot_ly(data_coords,
             x = ~x, y = ~y, z = ~Date,
             color = ~indicator, colors = c(
@@ -224,7 +241,7 @@ autoplot.ResamplingSptCVCstf = function( # nolint
 
         plot = mlr3misc::map(fold_id, function(.x) {
 
-          data_coords = prepare_autoplot_cstf(task, resampling_sub)
+          data_coords = format_resampling_list(task, resampling_sub)
 
           # get test and train indices
           row_id_test = resampling_sub$instance$test[[.x]]
@@ -235,6 +252,11 @@ autoplot.ResamplingSptCVCstf = function( # nolint
           data_coords[row_id %in% row_id_train, indicator := "Train"]
 
           data_coords$Date = as.Date(data_coords$Date)
+
+          # take stratified random sample from folds
+          if (!is.null(sample_fold_n)) {
+            data_coords = strat_sample_folds(data_coords, "test", sample_fold_n)
+          }
 
           if (show_omitted) {
             data_coords[indicator == "", indicator := "Omitted"]
@@ -302,7 +324,8 @@ autoplot.ResamplingSptCVCstf = function( # nolint
     }
 
     else {
-      stop("This method requires to set argument 'fold_id'. See ?autoplot.ResamplingSptCVCstf for more information.") # nolint
+      lg$fatal("This method requires to set argument 'fold_id'. See ?autoplot.ResamplingSptCVCstf for more information.") # nolint
+      stop()
     }
 
     # is a grid requested?
@@ -312,13 +335,9 @@ autoplot.ResamplingSptCVCstf = function( # nolint
       }
       return(plot)
     } else {
-      messagef("Unfortunately plotly does not support a dynamic
-       arrangement of multiple subplots.
-       See article 'Visualization of spatiotemporal clusters'
-       (https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz) for a
-       manual workaround.
-       Use the objects in the returned list to arrange a custom grid.",
-        wrap = TRUE)
+      lg$warn("Unfortunately plotly does not support a dynamic arrangement of multiple subplots.
+       See article 'Visualization of spatiotemporal clusters' (https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz) for a manual workaround.
+       Use the objects in the returned list to arrange a custom grid.")
 
       if (static_image) {
         plotly::orca(plot, ...)
@@ -346,6 +365,7 @@ autoplot.ResamplingRepeatedSptCVCstf = function( # nolint
   point_size = 3,
   axis_label_fontsize = 11,
   plot3D = NULL,
+  plot_time_var = NULL,
   ...) {
 
   autoplot.ResamplingSptCVCstf(
@@ -360,7 +380,8 @@ autoplot.ResamplingRepeatedSptCVCstf = function( # nolint
     nticks_y = nticks_y,
     point_size = point_size,
     axis_label_fontsize = axis_label_fontsize,
-    plot3D = plot3D,
+    plot3D = plot3D, ,
+    plot_time_var = plot_time_var,
     ...,
     # ellipsis
     repeats_id = repeats_id

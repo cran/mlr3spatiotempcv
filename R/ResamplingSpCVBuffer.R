@@ -1,6 +1,7 @@
 #' @title (blockCV) Spatial buffering resampling
 #'
 #' @template rox_spcv_buffer
+#' @name mlr_resamplings_spcv_buffer
 #'
 #' @references
 #' `r format_bib("valavi2018")`
@@ -44,9 +45,9 @@ ResamplingSpCVBuffer = R6Class("ResamplingSpCVBuffer",
       super$initialize(
         id = id,
         param_set = ps,
+        label = "Spatial buffering resampling",
         man = "mlr3spatiotempcv::mlr_resamplings_spcv_buffer"
       )
-      mlr3misc::require_namespaces(c("blockCV", "sf"))
     },
 
     #' @description
@@ -55,8 +56,10 @@ ResamplingSpCVBuffer = R6Class("ResamplingSpCVBuffer",
     #'  A task to instantiate.
     instantiate = function(task) {
 
+      mlr3misc::require_namespaces(c("blockCV", "sf"))
+
       mlr3::assert_task(task)
-      checkmate::assert_multi_class(task, c("TaskClassifST", "TaskRegrST"))
+      assert_spatial_task(task)
       groups = task$groups
 
       if (!is.null(groups)) {
@@ -67,8 +70,8 @@ ResamplingSpCVBuffer = R6Class("ResamplingSpCVBuffer",
         task$row_ids,
         task$data()[[task$target_names]],
         task$coordinates(),
-        task$extra_args$positive,
-        task$extra_args$crs,
+        task$positive,
+        task$crs,
         task$properties)
 
       self$instance = instance
