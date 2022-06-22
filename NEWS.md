@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# mlr3spatiotempcv 2.0.1
+
+## Bugfixes
+
+- `autoplot.ResamplingSptCVCstf`: when multiple folds are requested, the subplots are now returned again (before, the return was empty)
+- `autoplot.ResamplingSptCVCstf`: the legend item for the "omitted" observations now displays the correct color and label again
+
+
 # mlr3spatiotempcv 2.0.0
 
 ## Breaking
