@@ -32,6 +32,10 @@ TaskRegrST = R6::R6Class("TaskRegrST",
     initialize = function(id, backend, target, label = NA_character_,
       coordinate_names, crs = NA_character_, coords_as_features = FALSE,
       extra_args = list()) {
+      if (inherits(backend, "sf")) {
+        stopf("Creating tasks from `sf` objects is not supported anymore since >= v2.0.0. Use `as_task_classif_st()` to convert sf objects into a task.") # nolint
+      }
+
       super$initialize(
         id = id, backend = backend, target = target,
         extra_args = extra_args
@@ -42,18 +46,18 @@ TaskRegrST = R6::R6Class("TaskRegrST",
       walk(coordinate_names, function(x) {
         assert_numeric(self$backend$head(1)[[x]], .var.name = x)
       })
-      self$coords_as_features = assert_flag(coords_as_features)
+
+      if (packageVersion("mlr3") > "0.13.4") {
+        # adjust classif task
+        self$task_type = "regr_st"
+        new_col_roles = named_list(setdiff(
+          mlr_reflections$task_col_roles[["regr_st"]],
+          names(private$.col_roles)), character(0))
+        private$.col_roles = insert_named(private$.col_roles, new_col_roles)
+      }
 
       # add coordinates as features
       self$coords_as_features = assert_flag(coords_as_features)
-
-      new_col_roles = named_list(
-        setdiff(
-          mlr_reflections$task_col_roles[["regr_st"]],
-          names(private$.col_roles)
-        ), character(0)
-      )
-      private$.col_roles = insert_named(private$.col_roles, new_col_roles)
     },
 
     #' Returns coordinates of observations.
@@ -63,7 +67,7 @@ TaskRegrST = R6::R6Class("TaskRegrST",
     #'
     #' @return [data.table::data.table()]
     coordinates = function(row_ids = NULL) {
-      if (is.null(row_ids)) row_ids = self$row_ids
+      if (is.null(row_ids)) row_ids <- self$row_ids
       self$backend$data(rows = row_ids, cols = self$coordinate_names)
     },
 
@@ -81,11 +85,15 @@ TaskRegrST = R6::R6Class("TaskRegrST",
           sprintf("  - Space: %s", self$col_roles$space)
         ))
       } else if (length(self$col_roles$time)) {
-        catn(c("* Column roles:",
-          sprintf("  - Time: %s", self$col_roles$time)))
+        catn(c(
+          "* Column roles:",
+          sprintf("  - Time: %s", self$col_roles$time)
+        ))
       } else if (length(self$col_roles$space)) {
-        catn(c("* Column roles:",
-          sprintf("  - Space: %s", self$col_roles$space)))
+        catn(c(
+          "* Column roles:",
+          sprintf("  - Space: %s", self$col_roles$space)
+        ))
       }
     }
   ),
@@ -106,12 +114,17 @@ TaskRegrST = R6::R6Class("TaskRegrST",
       if (missing(rhs)) {
         return(self$extra_args$coordinate_names)
       }
-      self$extra_args$coordinate_names = assert_character(rhs, len = 2,
-        all.missing = FALSE, any.missing = FALSE)
+      self$extra_args$coordinate_names = assert_character(rhs,
+        len = 2,
+        all.missing = FALSE, any.missing = FALSE
+      )
     },
 
     #' @field coords_as_features (`logical(1)`)\cr
-    #'   If `TRUE`, coordinates are used as features.
+    #'  If `TRUE`, coordinates are used as features.
+    #'  This is a shortcut for
+    #'  `task$set_col_roles(c("x", "y"), role = "feature")` with the assumption
+    #'  that the coordinates in the data are named `"x"` and `"y"`.
     coords_as_features = function(rhs) {
       if (missing(rhs)) {
         return(self$extra_args$coords_as_features)

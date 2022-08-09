@@ -1,5 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# mlr3spatiotempcv 2.0.2
+
+- Add error message when trying to create a `TaskClassifST` or `TaskRegrST` from an `sf` object
+- Synchronize `TaskClassifST` or `TaskRegrST` with {mlr3spatial}
+- Add support for `mlr_reflections` changes in {mlr3} > 0.13.4
+- Adjust "Getting Started" vignette to recent API changes
+- `autoplot.ResamplingSptCVCstf()`: Add missing support for argument `axis_label_fontsize` for x and y axes
+
 # mlr3spatiotempcv 2.0.1
 
 ## Bugfixes
@@ -19,6 +27,8 @@
   **The method will produce different fold results compared to {mlr3spatiotempcv} <= 1.0.1**.
   This is because of a change/fix in the sampling behavior: before, an (unwanted) stratified sampling was done on `time` and `space` variables.
   While this matched the upstream implementation in {CAST}, this did not match with the actual theoretical underpinning described in the literature.
+- {mlr3} API adaptations: `TaskClassifST$new()` and `TaskRegrST$new()` only accepts `DataBackendDataTable`.
+  Support for `sf` objects has moved to `as_task_*_st()` which accepts `sf` objects directly and creates the DataBackend behind the scenes.
 
 ## Features
 

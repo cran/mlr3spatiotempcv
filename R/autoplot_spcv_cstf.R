@@ -61,7 +61,7 @@
 #' `static_image = TRUE`.
 #' @export
 #' @seealso
-#'   - mlr3book chapter on ["Spatiotemporal Visualization"](https://mlr3book.mlr-org.com/08-special-spatiotemp.html#vis-spt-partitions)
+#'   - mlr3book chapter on ["Spatiotemporal Visualization"](https://mlr3book.mlr-org.com/special.html#vis-spt-partitions)
 #'   - Vignette [Spatiotemporal Visualization](https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz.html).
 #'   - [autoplot.ResamplingSpCVBlock()]
 #'   - [autoplot.ResamplingSpCVBuffer()]
@@ -222,8 +222,10 @@ autoplot.ResamplingSptCVCstf = function( # nolint
             repeats_id),
           autosize = TRUE,
           scene = list(
-            xaxis = list(title = "Lat", nticks = nticks_x),
-            yaxis = list(title = "Lon", nticks = nticks_y),
+            xaxis = list(title = "Lat", nticks = nticks_x,
+              tickfont = list(size = axis_label_fontsize)),
+            yaxis = list(title = "Lon", nticks = nticks_y,
+              tickfont = list(size = axis_label_fontsize)),
             zaxis = list(
               title = "Time",
               type = "date",
