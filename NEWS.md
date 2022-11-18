@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# mlr3spatiotempcv 2.0.3
+
+- add `label` support for built-in tasks
+- adhere to CRAN "noSuggests" policy
+
 # mlr3spatiotempcv 2.0.2
 
 - Add error message when trying to create a `TaskClassifST` or `TaskRegrST` from an `sf` object
