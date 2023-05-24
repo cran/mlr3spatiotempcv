@@ -1,9 +1,17 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+<!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
+
+# mlr3spatiotempcv 2.1.0
+
+- Add support for {blockCV} v3 and bump requirement to >= 3.1.2 (#222)
+- Replace {raster} dependency in favor of {terra}
+- Remove CLUTO algorithm and method due to CLUTO being non-downloadable anymore (#224)
+
 
 # mlr3spatiotempcv 2.0.3
 
 - add `label` support for built-in tasks
 - adhere to CRAN "noSuggests" policy
+
 
 # mlr3spatiotempcv 2.0.2
 
@@ -12,6 +20,7 @@
 - Add support for `mlr_reflections` changes in {mlr3} > 0.13.4
 - Adjust "Getting Started" vignette to recent API changes
 - `autoplot.ResamplingSptCVCstf()`: Add missing support for argument `axis_label_fontsize` for x and y axes
+
 
 # mlr3spatiotempcv 2.0.1
 
