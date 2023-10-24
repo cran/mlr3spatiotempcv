@@ -366,10 +366,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1>Introduction</h1>
 <p>This package adds resampling methods for the {mlr3} package framework
 suited for spatial, temporal and spatiotemporal data. These methods can
-help to reduce the influence of <a href="https://mlr3book.mlr-org.com/special.html#autocorrelation">autocorrelation</a>
-on performance estimates when performing cross-validation. While this
-article gives a rather technical introduction to the package, a more
-applied approach can be found in the <a href="https://mlr3book.mlr-org.com/special.html#spatiotemporal">mlr3book
+help to reduce the influence of autocorrelation on performance estimates
+when performing cross-validation. While this article gives a rather
+technical introduction to the package, a more applied approach can be
+found in the <a href="https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporall">mlr3book
 section on “Spatiotemporal Analysis”</a>.</p>
 <p>After loading the package via
 <code>library(&quot;mlr3spatiotempcv&quot;)</code>, the spatiotemporal resampling
@@ -495,6 +495,7 @@ with new entries when loading {mlr3spatiotempcv}.</p>
 <li><p><code>mlr_resampling_spcv_block</code></p></li>
 <li><p><code>mlr_resampling_spcv_buffer</code></p></li>
 <li><p><code>mlr_resampling_spcv_coords</code></p></li>
+<li><p><code>mlr_resampling_spcv_knndm</code></p></li>
 <li><p><code>mlr_resampling_spcv_disc</code></p></li>
 <li><p><code>mlr_resampling_spcv_tiles</code></p></li>
 <li><p><code>mlr_resampling_spcv_env</code></p></li>
@@ -563,31 +564,37 @@ corresponding “repeated” method.</p>
 <td><code>mlr_resamplings_spcv_coords</code></td>
 </tr>
 <tr class="even">
+<td><strong>Clustering</strong>, spatial</td>
+<td>(CAST) KNNDM</td>
+<td><span class="citation">(<strong>linnenbrink2023?</strong>)</span></td>
+<td><code>mlr_resamplings_spcv_knndm</code></td>
+</tr>
+<tr class="odd">
 <td><strong>Clustering</strong>, feature-space</td>
 <td>(blockCV) Environmental Blocking</td>
 <td><span class="citation">Valavi et al. (2018)</span></td>
 <td><code>mlr_resamplings_spcv_env</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><hr /></td>
 <td><hr /></td>
 <td><hr /></td>
 <td><hr /></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Grouping</strong>, predefined inds</td>
 <td>(mlr3) Predefined partitions</td>
 <td></td>
 <td><code>mlr_resamplings_custom_cv</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Grouping</strong>, spatiotemporal</td>
 <td>(mlr3) via <code>col_roles</code> <code>&quot;group&quot;</code></td>
 <td></td>
 <td><code>mlr_resamplings_cv</code>,
 <code>Task$set_col_roles(&lt;variable&gt;, &quot;group&quot;)</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Grouping</strong>, spatiotemporal</td>
 <td>(CAST) Leave-Location-and-Time-Out</td>
 <td><span class="citation">Meyer et al. (2018)</span></td>

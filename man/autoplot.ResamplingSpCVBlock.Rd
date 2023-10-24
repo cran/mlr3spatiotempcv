@@ -17,6 +17,7 @@
   show_blocks = FALSE,
   show_labels = FALSE,
   sample_fold_n = NULL,
+  label_size = 2,
   ...
 )
 
@@ -31,6 +32,7 @@
   show_blocks = FALSE,
   show_labels = FALSE,
   sample_fold_n = NULL,
+  label_size = 2,
   ...
 )
 
@@ -70,6 +72,9 @@ Whether to show an overlay of the spatial block IDs.}
 Number of points in a random sample stratified over partitions.
 This argument aims to keep file sizes of resulting plots reasonable and
 reduce overplotting in dense datasets.}
+
+\item{label_size}{\verb{[numeric(1)]}\cr
+Label size of block labels. Only applies for \code{show_labels = TRUE}.}
 
 \item{...}{Passed to \code{geom_sf()}. Helpful for adjusting point sizes and
 shapes.}
@@ -129,7 +134,7 @@ if (mlr3misc::require_namespaces(c("sf", "blockCV"), quietly = TRUE)) {
 }
 \seealso{
 \itemize{
-\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/special.html#vis-spt-partitions}{"Spatiotemporal Visualization"}
+\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#spatiotemp-cv}{"Spatiotemporal Visualization"}
 \item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}
 \item \code{\link[=autoplot.ResamplingSpCVCoords]{autoplot.ResamplingSpCVCoords()}}
 \item \code{\link[=autoplot.ResamplingSpCVEnv]{autoplot.ResamplingSpCVEnv()}}

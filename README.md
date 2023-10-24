@@ -18,13 +18,13 @@ If you prefer the [tidymodels](https://www.tidymodels.org/) ecosystem, have a lo
 
 CRAN version
 
-``` r
+```r
 install.packages("mlr3spatiotempcv")
 ```
 
 Development version
 
-``` r
+```r
 remotes::install_github("mlr-org/mlr3spatiotempcv")
 
 # R Universe Repo
@@ -35,7 +35,7 @@ install.packages('mlr3spatiotempcv', mlrorg = 'https://mlr-org.r-universe.dev')
 
 See the ["Get Started"](https://mlr3spatiotempcv.mlr-org.com/articles/mlr3spatiotempcv.html) vignette for a quick introduction.
 
-For more detailed information including an usage example see the ["Spatiotemporal Analysis"](https://mlr3book.mlr-org.com/special.html#spatiotemporal) chapter in the mlr3book.
+For more detailed information including an usage example see the ["Spatiotemporal Analysis"](https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporal) chapter in the mlr3book.
 
 Article ["Spatiotemporal Visualization"](https://mlr3spatiotempcv.mlr-org.com/articles/spatiotemp-viz.html) shows how 3D subplots grids can be created.
 
@@ -47,22 +47,24 @@ To cite the package in publications, use the output of `citation("mlr3spatiotemp
 
 - [Recorded talk about mlr3spatiotempcv and mlr3spatial at OpenDataScience Europe Conference 2021 in Wageningen, NL](https://av.tib.eu/media/55271)
 - [List of scientific articles related to spatiotemporal modeling and/or spatial partitioning](https://pat-s.notion.site/Spatial-autocorrelation-in-modeling-b62e1bc904b546b9a489b171913a3551)
+
 # Other spatiotemporal resampling packages
 
 This list does not claim to be comprehensive.
 
 (Disclaimer: Because CRAN does not like DOI URLs in their automated checks, direct linking to scientific articles is not possible...)
 
-| Name          | Language | Resources                                                                                                                                                                              |
-| ------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| blockCV       | R        | [CRAN](https://cran.r-project.org/package=blockCV)                              |
+| Name          | Language | Resources                                                                                                                     |
+| ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| blockCV       | R        | [CRAN](https://cran.r-project.org/package=blockCV)                                                                            |
 | CAST          | R        | [Paper](https://www.sciencedirect.com/science/article/pii/S1364815217310976), [CRAN](https://cran.r-project.org/package=CAST) |
-| ENMeval       | R        | [CRAN](https://cran.r-project.org/package=ENMeval)                              |
-| spatialsample | R        | [CRAN](https://cran.r-project.org/package=spatialsample)                                                                                                               |
-| sperrorest    | R        | [CRAN](https://cran.r-project.org/package=sperrorest)                                                          |
-| Pyspatialml   | Python   | [GitHub](https://github.com/stevenpawley/Pyspatialml)                                                                                                                                  |
-| spacv         | Python   | [GitHub](https://github.com/SamComber/spacv)                                                                                                                                           |
-| Museo Toolbox         | Python   | [Paper](https://joss.theoj.org/papers/10.21105/joss.01978), [GitHub](https://github.com/nkarasiak/MuseoToolBox)                                                                                                                                           |
+| ENMeval       | R        | [CRAN](https://cran.r-project.org/package=ENMeval)                                                                            |
+| spatialsample | R        | [CRAN](https://cran.r-project.org/package=spatialsample)                                                                      |
+| sperrorest    | R        | [CRAN](https://cran.r-project.org/package=sperrorest)                                                                         |
+| Pyspatialml   | Python   | [GitHub](https://github.com/stevenpawley/Pyspatialml)                                                                         |
+| spacv         | Python   | [GitHub](https://github.com/SamComber/spacv)                                                                                  |
+| Museo Toolbox | Python   | [Paper](https://joss.theoj.org/papers/10.21105/joss.01978), [GitHub](https://github.com/nkarasiak/MuseoToolBox)               |
+| spatial-kfold | Python   | [GitHub](https://github.com/WalidGharianiEAGLE/spatial-kfold)                                                                 |
 
 # FAQ
 
