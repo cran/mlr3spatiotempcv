@@ -13,7 +13,7 @@
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(mlr3)
 #' task = tsk("cookfarm_mlr3")
 #' task$set_col_roles("SOURCEID", roles = "space")
@@ -132,3 +132,6 @@ ResamplingRepeatedSptCVCstf = R6Class("ResamplingRepeatedSptCVCstf",
     }
   )
 )
+
+#' @include aaa.R
+resamplings[["repeated_sptcv_cstf"]] = ResamplingRepeatedSptCVCstf

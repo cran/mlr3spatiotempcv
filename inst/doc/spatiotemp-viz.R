@@ -1,11 +1,10 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-on_mac = Sys.info()[["sysname"]] == "Darwin"
 
-## ---- fig.align='center', eval=FALSE------------------------------------------
+## ----fig.align='center', eval=FALSE-------------------------------------------
 #  library(mlr3)
 #  library(mlr3spatiotempcv)
 #  task_st = tsk("cookfarm_mlr3")
@@ -45,11 +44,11 @@ on_mac = Sys.info()[["sysname"]] == "Darwin"
 #    )
 #  )
 
-## ---- echo=FALSE, fig.align='center', fig.align='center'----------------------
+## ----echo=FALSE, fig.align='center', fig.align='center'-----------------------
 # plotly::save_image(foo, "man/figures/sptcv_cstf_multiplot.png", width = 1200, height = 1200)
 knitr::include_graphics("../man/figures/sptcv_cstf_multiplot.png")
 
-## ---- echo=FALSE, cache=TRUE, fig.width=10, fig.height=8, eval=!on_mac--------
+## ----echo=FALSE, cache=TRUE, fig.width=10, fig.height=8-----------------------
 library(patchwork)
 library(ggplot2)
 library(mlr3)

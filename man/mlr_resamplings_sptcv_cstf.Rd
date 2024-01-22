@@ -35,7 +35,7 @@ If \code{TRUE}, stratify on the target column.
 }
 
 \examples{
-\dontrun{
+\donttest{
 library(mlr3)
 task = tsk("cookfarm_mlr3")
 task$set_col_roles("SOURCEID", roles = "space")

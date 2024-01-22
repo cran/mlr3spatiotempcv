@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -148,6 +148,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
+margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -566,7 +567,7 @@ corresponding “repeated” method.</p>
 <tr class="even">
 <td><strong>Clustering</strong>, spatial</td>
 <td>(CAST) KNNDM</td>
-<td><span class="citation">(<strong>linnenbrink2023?</strong>)</span></td>
+<td><span class="citation">Linnenbrink et al. (2023)</span></td>
 <td><code>mlr_resamplings_spcv_knndm</code></td>
 </tr>
 <tr class="odd">
@@ -606,13 +607,19 @@ corresponding “repeated” method.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-brenning2012" class="csl-entry">
 Brenning, Alexander. 2012. <span>“<span class="nocase">Spatial
 cross-validation and bootstrap for the assessment of prediction rules in
 remote sensing: The R package sperrorest</span>.”</span> In <em>2012
 <span>IEEE</span> International Geoscience and Remote Sensing
 Symposium</em>. <span>IEEE</span>. <a href="https://doi.org/10.1109/igarss.2012.6352393">https://doi.org/10.1109/igarss.2012.6352393</a>.
+</div>
+<div id="ref-linnenbrink2023" class="csl-entry">
+Linnenbrink, Jan, Carles Milà, Marvin Ludwig, and Hanna Meyer. 2023.
+<span>“<span class="nocase">kNNDM</span>: K-Fold <span>Nearest Neighbour
+Distance Matching Cross-Validation</span> for Map Accuracy
+Estimation.”</span> <em>EGUsphere</em>, July, 1–16. <a href="https://doi.org/10.5194/egusphere-2023-1308">https://doi.org/10.5194/egusphere-2023-1308</a>.
 </div>
 <div id="ref-meyer2018" class="csl-entry">
 Meyer, Hanna, Christoph Reudenbach, Tomislav Hengl, Marwan Katurji, and

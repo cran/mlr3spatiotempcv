@@ -75,7 +75,7 @@ mlr3 spatial resampling object of class \link{ResamplingCV} or
 Generic S3 \code{plot()} and \code{autoplot()} (ggplot2) methods.
 }
 \examples{
-\dontrun{
+\donttest{
 if (mlr3misc::require_namespaces(c("sf", "patchwork", "ggtext", "ggsci"), quietly = TRUE)) {
   library(mlr3)
   library(mlr3spatiotempcv)
@@ -93,7 +93,7 @@ if (mlr3misc::require_namespaces(c("sf", "patchwork", "ggtext", "ggsci"), quietl
 }
 \seealso{
 \itemize{
-\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#spatiotemp-cv}{"Spatiotemporal Visualization"}
+\item mlr3book chapter on \href{https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporal}{"Spatial Analysis"}
 \item \code{\link[=autoplot.ResamplingSpCVBlock]{autoplot.ResamplingSpCVBlock()}}
 \item \code{\link[=autoplot.ResamplingSpCVBuffer]{autoplot.ResamplingSpCVBuffer()}}
 \item \code{\link[=autoplot.ResamplingSpCVCoords]{autoplot.ResamplingSpCVCoords()}}
