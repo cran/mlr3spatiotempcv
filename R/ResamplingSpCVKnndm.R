@@ -39,29 +39,29 @@ ResamplingSpCVKnndm = R6Class("ResamplingSpCVKnndm",
     #' @param id `character(1)`\cr
     #'   Identifier for the resampling strategy.
     initialize = function(id = "spcv_knndm") {
-      ps = ParamSet$new(params = list(
-        ParamUty$new("modeldomain", default = NULL,
-          custom_check = function(x) {
+      ps = ps(
+        modeldomain = p_uty(default = NULL,
+          custom_check = crate(function(x) {
             checkmate::check_class(x, "sfc_POLYGON",
               null.ok = TRUE)
-          }
+          })
         ),
-        ParamUty$new("ppoints", default = NULL,
-          custom_check = function(x) {
+        predpoints = p_uty(default = NULL,
+          custom_check = crate(function(x) {
             checkmate::check_class(x, "sfc_POINT",
               null.ok = TRUE)
-          }
+          })
         ),
-        ParamFct$new("space", levels = "geographical", default = "geographical"),
-        ParamInt$new("folds", default = 10, lower = 2),
-        ParamDbl$new("maxp", default = 0.5, lower = 0, upper = 1),
-        ParamFct$new("clustering", default = "hierarchical",
-          levels = c("hierarchical", "kmeans"), tags = "required"),
-        ParamUty$new("linkf", default = "ward.D2"),
-        ParamInt$new("samplesize", default = 1000),
-        ParamFct$new("sampling", levels = c("random", "hexagonal", "regular", "Fibonacci"),
+        space = p_fct(levels = "geographical", default = "geographical"),
+        folds = p_int(default = 10, lower = 2),
+        maxp = p_dbl(default = 0.5, lower = 0, upper = 1),
+        clustering = p_fct(default = "hierarchical",
+          levels = c("hierarchical", "kmeans")),
+        linkf = p_uty(default = "ward.D2"),
+        samplesize = p_int(default = 1000),
+        sampling = p_fct(levels = c("random", "hexagonal", "regular", "Fibonacci"),
           default = "regular")
-      ))
+      )
       ps$values = list(folds = 10L)
 
       super$initialize(
@@ -87,8 +87,8 @@ ResamplingSpCVKnndm = R6Class("ResamplingSpCVKnndm",
 
       pv = self$param_set$values
 
-      if (is.null(pv$modeldomain) && is.null(pv$ppoints)) {
-        stopf("Either 'modeldomain' or 'ppoints' need to be set.")
+      if (is.null(pv$modeldomain) && is.null(pv$predpoints)) {
+        stopf("Either 'modeldomain' or 'predpoints' need to be set.")
       }
 
       if (!is.null(groups)) {
@@ -156,7 +156,7 @@ ResamplingSpCVKnndm = R6Class("ResamplingSpCVKnndm",
       inds = CAST::knndm(
         tpoints = points,
         modeldomain = self$param_set$values$modeldomain,
-        ppoints = self$param_set$values$ppoints,
+        predpoints = self$param_set$values$predpoints,
         k = self$param_set$values$folds,
         maxp = self$param_set$values$maxp,
         clustering = self$param_set$values$clustering,

@@ -25,7 +25,7 @@
 #'
 #' task = mlr3spatial::as_task_classif_st(sf::st_as_sf(train_points), "target", positive = "TRUE")
 #'
-#' cv_knndm = rsmp("repeated_spcv_knndm", ppoints = pred_points, repeats = 2)
+#' cv_knndm = rsmp("repeated_spcv_knndm", predpoints = pred_points, repeats = 2)
 #' cv_knndm$instantiate(task)
 
 #' #' ### Individual sets:
@@ -45,29 +45,29 @@ ResamplingRepeatedSpCVKnndm = R6Class("ResamplingRepeatedSpCVKnndm",
     #' @param id `character(1)`\cr
     #'   Identifier for the resampling strategy.
     initialize = function(id = "repeated_spcv_knndm") {
-      ps = ParamSet$new(params = list(
-        ParamUty$new("modeldomain", default = NULL,
-          custom_check = function(x) {
+      ps = ps(
+        modeldomain = p_uty(default = NULL,
+          custom_check = crate(function(x) {
             checkmate::check_class(x, "SpatRaster",
               null.ok = TRUE)
-          }
+          })
         ),
-        ParamUty$new("ppoints", default = NULL,
-          custom_check = function(x) {
+        predpoints = p_uty(default = NULL,
+          custom_check = crate(function(x) {
             checkmate::check_class(x, "sfc_POINT",
               null.ok = TRUE)
-          }
+          })
         ),
-        ParamFct$new("space", levels = "geographical", default = "geographical"),
-        ParamInt$new("folds", default = 10, lower = 2),
-        ParamDbl$new("maxp", default = 0.5, lower = 0, upper = 1),
-        ParamFct$new("clustering", default = "hierarchical",
-          levels = c("hierarchical", "kmeans"), tags = "required"),
-        ParamUty$new("linkf", default = "ward.D2"),
-        ParamInt$new("samplesize"),
-        ParamFct$new("sampling", levels = c("random", "hexagonal", "regular", "Fibonacci")),
-        ParamInt$new("repeats", lower = 1, default = 1L, tags = "required")
-      ))
+        space = p_fct(levels = "geographical", default = "geographical"),
+        folds = p_int(default = 10, lower = 2),
+        maxp = p_dbl(default = 0.5, lower = 0, upper = 1),
+        clustering = p_fct(default = "hierarchical",
+          levels = c("hierarchical", "kmeans")),
+        linkf = p_uty(default = "ward.D2"),
+        samplesize = p_int(),
+        sampling = p_fct(levels = c("random", "hexagonal", "regular", "Fibonacci")),
+        repeats = p_int(lower = 1, tags = "required")
+      )
       ps$values = list(repeats = 1, folds = 10)
 
       super$initialize(
@@ -108,13 +108,13 @@ ResamplingRepeatedSpCVKnndm = R6Class("ResamplingRepeatedSpCVKnndm",
 
       # Set values to default if missing
       mlr3misc::map(
-        c("modeldomain", "ppoints", "space", "maxp", "folds", "clustering",
+        c("modeldomain", "predpoints", "space", "maxp", "folds", "clustering",
           "linkf", "samplesize", "sampling"),
         function(x) private$.set_default_param_values(x)
       )
 
-      if (is.null(pv$modeldomain) && is.null(pv$ppoints)) {
-        stopf("Either 'modeldomain' or 'ppoints' need to be set.")
+      if (is.null(pv$modeldomain) && is.null(pv$predpoints)) {
+        stopf("Either 'modeldomain' or 'predpoints' need to be set.")
       }
 
       if (!is.null(groups)) {
@@ -164,7 +164,7 @@ ResamplingRepeatedSpCVKnndm = R6Class("ResamplingRepeatedSpCVKnndm",
       map(seq_len(pv$repeats), function(i) {
         inds = CAST::knndm(tpoints = points,
           modeldomain = self$param_set$values$modeldomain,
-          ppoints = self$param_set$values$ppoints,
+          predpoints = self$param_set$values$predpoints,
           k = self$param_set$values$folds,
           maxp = self$param_set$values$maxp,
           clustering = self$param_set$values$clustering,

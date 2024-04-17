@@ -1,6 +1,6 @@
 Package: mlr3spatiotempcv
 Title: Spatiotemporal Resampling Methods for 'mlr3'
-Version: 2.3.0
+Version: 2.3.1
 Authors@R: c(
     person("Patrick", "Schratz", , "patrick.schratz@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0748-6624")),
@@ -34,7 +34,7 @@ Config/testthat/parallel: true
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
 Collate: 'aaa.R' 'ResamplingRepeatedSpCVBlock.R'
         'ResamplingRepeatedSpCVCoords.R' 'ResamplingRepeatedSpCVDisc.R'
         'ResamplingRepeatedSpCVEnv.R' 'ResamplingRepeatedSpCVTiles.R'
@@ -51,11 +51,11 @@ Collate: 'aaa.R' 'ResamplingRepeatedSpCVBlock.R'
         'autoplot_spcv_cstf.R' 'bibentries.R' 'helper.R'
         'helper_DataBackend.R' 'helper_autoplot.R' 'reexports.R'
         'zzz.R'
-Packaged: 2024-01-22 14:01:33 UTC; pjs
+Packaged: 2024-04-17 11:54:17 UTC; pjs
 Author: Patrick Schratz [aut, cre] (<https://orcid.org/0000-0003-0748-6624>),
   Marc Becker [aut] (<https://orcid.org/0000-0002-8115-0400>),
   Jannes Muenchow [ctb] (<https://orcid.org/0000-0001-7834-4717>),
   Michel Lang [ctb] (<https://orcid.org/0000-0001-9754-0393>)
 Maintainer: Patrick Schratz <patrick.schratz@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-01-22 14:20:03 UTC
+Date/Publication: 2024-04-17 12:10:05 UTC
