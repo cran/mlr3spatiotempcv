@@ -1,6 +1,6 @@
 Package: mlr3spatiotempcv
 Title: Spatiotemporal Resampling Methods for 'mlr3'
-Version: 2.3.1
+Version: 2.3.2
 Authors@R: c(
     person("Patrick", "Schratz", , "patrick.schratz@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0748-6624")),
@@ -11,10 +11,11 @@ Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = "ctb",
            comment = c(ORCID = "0000-0001-9754-0393"))
   )
-Description: Extends the mlr3 ML framework with spatio-temporal resampling
-    methods to account for the presence of spatiotemporal autocorrelation
-    (STAC) in predictor variables. STAC may cause highly biased
-    performance estimates in cross-validation if ignored.
+Description: Extends the mlr3 machine learning framework with
+    spatio-temporal resampling methods to account for the presence of
+    spatiotemporal autocorrelation (STAC) in predictor variables. STAC may
+    cause highly biased performance estimates in cross-validation if
+    ignored. A JSS article is available at <doi:10.18637/jss.v111.i07>.
 License: LGPL-3
 URL: https://mlr3spatiotempcv.mlr-org.com/,
         https://github.com/mlr-org/mlr3spatiotempcv,
@@ -34,7 +35,7 @@ Config/testthat/parallel: true
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Collate: 'aaa.R' 'ResamplingRepeatedSpCVBlock.R'
         'ResamplingRepeatedSpCVCoords.R' 'ResamplingRepeatedSpCVDisc.R'
         'ResamplingRepeatedSpCVEnv.R' 'ResamplingRepeatedSpCVTiles.R'
@@ -51,11 +52,11 @@ Collate: 'aaa.R' 'ResamplingRepeatedSpCVBlock.R'
         'autoplot_spcv_cstf.R' 'bibentries.R' 'helper.R'
         'helper_DataBackend.R' 'helper_autoplot.R' 'reexports.R'
         'zzz.R'
-Packaged: 2024-04-17 11:54:17 UTC; pjs
+Packaged: 2024-11-29 12:51:06 UTC; pjs
 Author: Patrick Schratz [aut, cre] (<https://orcid.org/0000-0003-0748-6624>),
   Marc Becker [aut] (<https://orcid.org/0000-0002-8115-0400>),
   Jannes Muenchow [ctb] (<https://orcid.org/0000-0001-7834-4717>),
   Michel Lang [ctb] (<https://orcid.org/0000-0001-9754-0393>)
 Maintainer: Patrick Schratz <patrick.schratz@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-04-17 12:10:05 UTC
+Date/Publication: 2024-11-29 13:10:02 UTC
